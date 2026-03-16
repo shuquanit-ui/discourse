@@ -1,0 +1,6 @@
+en:
+  site_settings:
+    keyword_glossary_enabled: "Enable keyword glossary"
+    keyword_glossary_entries: "Glossary entries (one per line): term|description|url(optional)"
+    keyword_glossary_trigger: "Trigger mode (click/hover)"
+    keyword_glossary_max_width: "Popup max width (px)"

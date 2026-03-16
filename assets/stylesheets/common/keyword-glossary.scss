@@ -1,0 +1,45 @@
+.cooked .keyword-glossary-trigger {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--tertiary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 2px;
+  padding: 0;
+}
+
+.cooked .keyword-glossary-trigger:hover {
+  color: var(--tertiary-hover);
+}
+
+.keyword-glossary-popup {
+  position: absolute;
+  z-index: 1001;
+  background: var(--secondary);
+  color: var(--primary);
+  border: 1px solid var(--primary-low-mid);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  line-height: 1.5;
+}
+
+.keyword-glossary-popup__term {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.keyword-glossary-popup__desc {
+  font-size: 14px;
+}
+
+.keyword-glossary-popup__link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--tertiary);
+  text-decoration: underline;
+}

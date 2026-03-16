@@ -1,0 +1,6 @@
+zh_CN:
+  site_settings:
+    keyword_glossary_enabled: "启用关键词词条弹窗"
+    keyword_glossary_entries: "词条配置（每行一个）：关键词|说明|链接(可选)"
+    keyword_glossary_trigger: "触发方式（click/hover）"
+    keyword_glossary_max_width: "弹窗最大宽度（像素）"
