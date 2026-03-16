@@ -184,11 +184,14 @@ function processCooked(element, regex, entryMap) {
 }
 
 export default apiInitializer("1.8.0", (api) => {
-  if (!settings.keyword_glossary_enabled) {
+  const siteSettings = api.container.lookup("service:site-settings");
+  const pluginSettings = siteSettings?.settings || {};
+
+  if (!pluginSettings.keyword_glossary_enabled) {
     return;
   }
 
-  const entries = normalizeEntries(settings.keyword_glossary_entries);
+  const entries = normalizeEntries(pluginSettings.keyword_glossary_entries);
   if (!entries.length) {
     return;
   }
@@ -203,8 +206,10 @@ export default apiInitializer("1.8.0", (api) => {
     entryMap.set(entry.term.toLowerCase(), entry);
   });
 
-  const popup = createPopup(Number(settings.keyword_glossary_max_width || 320));
-  const mode = settings.keyword_glossary_trigger || "click";
+  const popup = createPopup(
+    Number(pluginSettings.keyword_glossary_max_width || 320)
+  );
+  const mode = pluginSettings.keyword_glossary_trigger || "click";
 
   const openPopup = (trigger) => {
     const entry = entryMap.get((trigger.dataset.term || "").toLowerCase());
