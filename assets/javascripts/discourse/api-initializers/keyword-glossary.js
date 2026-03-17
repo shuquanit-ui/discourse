@@ -241,13 +241,19 @@ function loadEntries() {
 }
 
 export default apiInitializer("1.8.0", (api) => {
-  const siteSettings = api.container.lookup("service:site-settings")?.settings || {};
+  const siteSettingsService = api.container.lookup("service:site-settings");
+  const globalSiteSettings = window.Discourse?.SiteSettings || {};
+  const readSetting = (key, fallback = null) =>
+    siteSettingsService?.[key] ??
+    siteSettingsService?.settings?.[key] ??
+    globalSiteSettings[key] ??
+    fallback;
 
-  if (!siteSettings.keyword_glossary_enabled) {
+  if (!readSetting("keyword_glossary_enabled", false)) {
     return;
   }
 
-  const popup = createPopup(Number(siteSettings.keyword_glossary_max_width || 320));
+  const popup = createPopup(Number(readSetting("keyword_glossary_max_width", 320) || 320));
   loadEntries();
 
   document.addEventListener("click", (event) => {
