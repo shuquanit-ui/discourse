@@ -161,7 +161,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       const upload = response?.files?.[0] || response;
       this.setField(
         "logo_url",
-        upload?.short_path || upload?.short_url || upload?.url || ""
+        upload?.url || upload?.short_path || upload?.short_url || ""
       );
     } catch {
       this.error = I18n.t("keyword_glossary.errors.logo_upload_failed");

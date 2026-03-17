@@ -12,10 +12,7 @@ end
 
 Discourse::Application.routes.draw do
   get "/admin/plugins/keyword-glossary" =>
-        "admin/plugins#show",
-      defaults: {
-        plugin_id: "keyword-glossary",
-      },
+        redirect("/admin/plugins/keyword-glossary/entries"),
       constraints: lambda { |req| req.format.html? }
 
   get "/admin/plugins/keyword-glossary/entries" =>
