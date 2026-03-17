@@ -17,6 +17,5 @@ Discourse::Application.routes.draw do
   scope "/", defaults: { format: :json } do
     get "/keyword-glossary/entries" => "discourse_keyword_glossary/glossary_entries#index"
     post "/keyword-glossary/entries/:id/vote" => "discourse_keyword_glossary/feedback#vote"
-    post "/keyword-glossary/entries/:id/correction" => "discourse_keyword_glossary/feedback#correction"
   end
 end

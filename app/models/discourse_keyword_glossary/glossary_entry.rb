@@ -11,10 +11,6 @@ module DiscourseKeywordGlossary
              class_name: "DiscourseKeywordGlossary::GlossaryVote",
              foreign_key: :glossary_entry_id,
              dependent: :destroy
-    has_many :corrections,
-             class_name: "DiscourseKeywordGlossary::GlossaryCorrection",
-             foreign_key: :glossary_entry_id,
-             dependent: :destroy
 
     validates :term, presence: true, uniqueness: { case_sensitive: false }
     validates :description, presence: true

@@ -89,7 +89,6 @@ export default <template>
                 <div class="keyword-glossary-admin__stats">
                   <span>👍 {{entry.upvotes_count}}</span>
                   <span>👎 {{entry.downvotes_count}}</span>
-                  <span>{{i18n "keyword_glossary.stats_corrections"}} {{entry.corrections_count}}</span>
                 </div>
               </td>
               <td class="d-table__cell">

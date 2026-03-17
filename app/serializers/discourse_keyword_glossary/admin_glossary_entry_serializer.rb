@@ -12,7 +12,6 @@ module DiscourseKeywordGlossary
                :enabled,
                :upvotes_count,
                :downvotes_count,
-               :corrections_count,
                :created_at,
                :updated_at
 

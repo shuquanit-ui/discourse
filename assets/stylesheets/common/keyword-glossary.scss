@@ -76,6 +76,7 @@ body.keyword-glossary-panel-open {
 
 .keyword-glossary-panel__content {
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 1.2rem 1.1rem 1rem;
   height: 100%;
   box-sizing: border-box;
@@ -115,7 +116,7 @@ body.keyword-glossary-panel-open {
   color: var(--primary);
   font-size: 0.95rem;
   line-height: 1.7;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .keyword-glossary-panel__body > :first-child {
@@ -196,7 +197,7 @@ body.keyword-glossary-panel-open {
 .keyword-glossary-panel__feedback {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.75rem;
   margin-top: 1rem;
   padding-top: 1rem;
@@ -211,8 +212,7 @@ body.keyword-glossary-panel-open {
   flex: 1 1 auto;
 }
 
-.keyword-glossary-panel__vote,
-.keyword-glossary-panel__correction-toggle {
+.keyword-glossary-panel__vote {
   appearance: none;
   border: 1px solid var(--primary-low);
   border-radius: 999px;
@@ -230,53 +230,14 @@ body.keyword-glossary-panel-open {
   white-space: nowrap;
 }
 
-.keyword-glossary-panel__correction-toggle {
-  border: 0;
-  background: transparent;
-  color: var(--primary-medium);
-  padding-right: 0;
-}
-
-.keyword-glossary-panel__vote.is-active,
-.keyword-glossary-panel__correction-toggle.is-active {
+.keyword-glossary-panel__vote.is-active {
   border-color: var(--tertiary);
   color: var(--tertiary);
   background: var(--tertiary-low);
 }
 
-.keyword-glossary-panel__correction-toggle.is-active {
-  border: 1px solid var(--tertiary);
-  padding-right: 0.75rem;
-}
-
 .keyword-glossary-panel__feedback-meta {
-  margin-top: 0.55rem;
-  font-size: 0.84rem;
-  color: var(--primary-medium);
-}
-
-.keyword-glossary-panel__correction-form {
-  margin-top: 0.9rem;
-  display: grid;
-  gap: 0.75rem;
-}
-
-.keyword-glossary-panel__correction-input {
-  width: 100%;
-  box-sizing: border-box;
-  background: var(--secondary);
-  border: 1px solid var(--primary-low);
-  border-radius: 12px;
-  color: var(--primary);
-  padding: 0.8rem 0.9rem;
-  resize: vertical;
-  min-height: 7rem;
-}
-
-.keyword-glossary-panel__correction-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  display: none;
 }
 
 .keyword-glossary-panel__footer {
@@ -326,11 +287,6 @@ body.keyword-glossary-panel-open {
 
   .keyword-glossary-panel__feedback {
     align-items: center;
-  }
-
-  .keyword-glossary-panel__correction-actions {
-    display: grid;
-    grid-template-columns: 1fr;
   }
 
   .keyword-glossary-panel__vote-group {

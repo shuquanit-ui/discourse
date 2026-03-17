@@ -35,24 +35,6 @@ module DiscourseKeywordGlossary
       )
     end
 
-    def correction
-      correction =
-        @entry.corrections.create!(
-          user: current_user,
-          content: params.require(:content).to_s.strip,
-        )
-
-      refresh_counts!
-
-      render_json_dump(
-        success: true,
-        correction_id: correction.id,
-        corrections_count: @entry.corrections_count,
-      )
-    rescue ActiveRecord::RecordInvalid => e
-      render_json_error(e.record.errors.full_messages.join("\n"))
-    end
-
     private
 
     def ensure_entry
@@ -79,7 +61,6 @@ module DiscourseKeywordGlossary
       @entry.update_columns(
         upvotes_count: @entry.votes.where(value: 1).count,
         downvotes_count: @entry.votes.where(value: -1).count,
-        corrections_count: @entry.corrections.count,
       )
       @entry.reload
     end

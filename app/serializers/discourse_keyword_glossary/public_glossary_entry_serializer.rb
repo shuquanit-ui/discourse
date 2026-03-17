@@ -11,7 +11,6 @@ module DiscourseKeywordGlossary
                :logo_url,
                :upvotes_count,
                :downvotes_count,
-               :corrections_count,
                :current_vote
 
     def description_cooked

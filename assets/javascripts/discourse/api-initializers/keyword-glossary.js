@@ -21,21 +21,10 @@ const state = {
   loaded: false,
   panelOpen: false,
   activeEntryId: null,
-  correctionOpen: false,
-  submittingCorrection: false,
 };
 
 function escapeRegExp(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function escapeHtml(text) {
-  return (text || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }
 
 function normalizeEntries(entries) {
@@ -45,7 +34,6 @@ function normalizeEntries(entries) {
       aliases: Array.isArray(entry.aliases) ? entry.aliases : [],
       upvotes_count: entry.upvotes_count || 0,
       downvotes_count: entry.downvotes_count || 0,
-      corrections_count: entry.corrections_count || 0,
       current_vote: entry.current_vote || 0,
     }))
     .filter((entry) => entry.term && (entry.description || entry.description_cooked));
@@ -150,24 +138,10 @@ function createPanel(maxWidth) {
             <button class="keyword-glossary-panel__vote" type="button" data-keyword-glossary-vote="1"></button>
             <button class="keyword-glossary-panel__vote" type="button" data-keyword-glossary-vote="-1"></button>
           </div>
-          <button class="keyword-glossary-panel__correction-toggle" type="button"></button>
         </div>
-        <div class="keyword-glossary-panel__feedback-meta"></div>
-        <form class="keyword-glossary-panel__correction-form" hidden>
-          <textarea class="keyword-glossary-panel__correction-input" rows="4" placeholder="${escapeHtml(
-            I18n.t("keyword_glossary.correction_placeholder")
-          )}"></textarea>
-          <div class="keyword-glossary-panel__correction-actions">
-            <button class="btn btn-primary" type="submit">${escapeHtml(
-              I18n.t("keyword_glossary.submit_correction")
-            )}</button>
-            <button class="btn btn-default" type="button" data-keyword-glossary-cancel-correction="1">${escapeHtml(
-              I18n.t("keyword_glossary.cancel")
-            )}</button>
-          </div>
-        </form>
+        <div class="keyword-glossary-panel__feedback-meta" hidden></div>
       </div>
-      <div class="keyword-glossary-panel__footer">
+      <div class="keyword-glossary-panel__footer" hidden>
         <a class="keyword-glossary-panel__link btn btn-primary" target="_blank" rel="noopener noreferrer" hidden></a>
       </div>
     </aside>
@@ -184,34 +158,12 @@ function setPanelOpen(root, open) {
   state.panelOpen = open;
 }
 
-function toggleCorrection(root, open) {
-  const form = root.querySelector(".keyword-glossary-panel__correction-form");
-  const toggleButton = root.querySelector(".keyword-glossary-panel__correction-toggle");
-  const textarea = root.querySelector(".keyword-glossary-panel__correction-input");
-
-  if (!form || !toggleButton) {
-    return;
-  }
-
-  state.correctionOpen = open;
-  form.hidden = !open;
-  toggleButton.classList.toggle("is-active", open);
-  toggleButton.textContent = open
-    ? I18n.t("keyword_glossary.cancel")
-    : I18n.t("keyword_glossary.correction");
-
-  if (!open && textarea) {
-    textarea.value = "";
-  }
-}
-
 function hidePanel(root) {
   if (!root || !state.panelOpen) {
     return;
   }
 
   state.activeEntryId = null;
-  toggleCorrection(root, false);
   setPanelOpen(root, false);
 }
 
@@ -228,9 +180,7 @@ function renderFeedback(root, entry) {
   downButton.classList.toggle("is-active", entry.current_vote === -1);
   upButton.textContent = `👍 ${I18n.t("keyword_glossary.vote_up")} (${entry.upvotes_count || 0})`;
   downButton.textContent = `👎 ${I18n.t("keyword_glossary.vote_down")} (${entry.downvotes_count || 0})`;
-  meta.textContent = I18n.t("keyword_glossary.correction_count", {
-    count: entry.corrections_count || 0,
-  });
+  meta.textContent = "";
 }
 
 function renderPanel(root, entry) {
@@ -276,7 +226,6 @@ function renderPanel(root, entry) {
   }
 
   renderFeedback(root, entry);
-  toggleCorrection(root, false);
 }
 
 function showPanel(root, entry) {
@@ -394,35 +343,6 @@ async function submitVote(root, entryId, value) {
   }
 }
 
-async function submitCorrection(root, entryId) {
-  const textarea = root.querySelector(".keyword-glossary-panel__correction-input");
-  if (!textarea) {
-    return;
-  }
-
-  const content = textarea.value.trim();
-  if (!content || state.submittingCorrection) {
-    return;
-  }
-
-  state.submittingCorrection = true;
-
-  try {
-    const updated = await ajax(`/keyword-glossary/entries/${entryId}/correction`, {
-      type: "POST",
-      data: { content },
-    });
-    const entry = updateEntryState(entryId, updated);
-    if (entry) {
-      renderFeedback(root, entry);
-    }
-    toggleCorrection(root, false);
-    popupAjax(I18n.t("keyword_glossary.correction_success"));
-  } finally {
-    state.submittingCorrection = false;
-  }
-}
-
 function popupAjax(message) {
   window.alert(message);
 }
@@ -470,8 +390,6 @@ export default apiInitializer("1.8.0", (api) => {
     const trigger = event.target.closest(".keyword-glossary-trigger");
     const shouldClose = event.target.closest("[data-keyword-glossary-close='1']");
     const closeButton = event.target.closest(".keyword-glossary-panel__close");
-    const correctionToggle = event.target.closest(".keyword-glossary-panel__correction-toggle");
-    const cancelCorrection = event.target.closest("[data-keyword-glossary-cancel-correction='1']");
     const voteButton = event.target.closest("[data-keyword-glossary-vote]");
 
     if (trigger) {
@@ -494,34 +412,10 @@ export default apiInitializer("1.8.0", (api) => {
       return;
     }
 
-    if (correctionToggle) {
-      event.preventDefault();
-      toggleCorrection(panel, !state.correctionOpen);
-      return;
-    }
-
-    if (cancelCorrection) {
-      event.preventDefault();
-      toggleCorrection(panel, false);
-      return;
-    }
-
     if (shouldClose || closeButton) {
       hidePanel(panel);
     }
   });
-
-  panel
-    .querySelector(".keyword-glossary-panel__correction-form")
-    ?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (!state.activeEntryId) {
-        return;
-      }
-      submitCorrection(panel, state.activeEntryId).catch(() =>
-        popupAjax(I18n.t("keyword_glossary.errors.correction_failed"))
-      );
-    });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
