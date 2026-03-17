@@ -12,6 +12,9 @@ end
 
 Discourse::Application.routes.draw do
   get "/admin/plugins/keyword-glossary" =>
+        redirect("/admin/plugins/keyword-glossary/entries")
+
+  get "/admin/plugins/keyword-glossary/settings" =>
         "admin/plugins#show",
       defaults: {
         plugin_id: "keyword-glossary",

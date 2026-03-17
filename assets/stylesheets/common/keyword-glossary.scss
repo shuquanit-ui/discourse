@@ -364,6 +364,25 @@ body.keyword-glossary-panel-open {
   border-radius: 1rem;
 }
 
+.keyword-glossary-admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.keyword-glossary-admin__header h1 {
+  margin: 0;
+}
+
+.keyword-glossary-admin__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .keyword-glossary-admin__panel {
   background: var(--secondary);
   border: 1px solid var(--primary-low);
@@ -595,6 +614,11 @@ body.keyword-glossary-panel-open {
 }
 
 @media (max-width: 800px) {
+  .keyword-glossary-admin__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .keyword-glossary-admin__modal {
     padding: 0.75rem;
     align-items: flex-end;
