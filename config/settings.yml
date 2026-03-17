@@ -12,7 +12,7 @@ plugins:
       - click
     client: true
   keyword_glossary_max_width:
-    default: 320
+    default: 420
     min: 220
     max: 600
     client: true

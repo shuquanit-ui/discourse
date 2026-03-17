@@ -1,6 +1,6 @@
 import { apiInitializer } from "discourse/lib/api";
 
-const PLUGIN_ID = "discourse-keyword-glossary";
+const PLUGIN_ID = "keyword-glossary";
 
 export default apiInitializer("1.30.0", (api) => {
   const currentUser = api.getCurrentUser();
