@@ -259,6 +259,162 @@ body.keyword-glossary-panel-open {
   margin-top: 1rem;
 }
 
+.keyword-glossary-markdown-editor {
+  min-width: 0;
+}
+
+.keyword-glossary-markdown-editor .EasyMDEContainer {
+  border: 1px solid var(--primary-low);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--secondary);
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.7rem 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--primary-low);
+  background: var(--secondary);
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar::before,
+.keyword-glossary-markdown-editor .editor-toolbar::after {
+  display: none;
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  margin: 0;
+  border: 1px solid var(--primary-low);
+  border-radius: 10px;
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.separator {
+  width: 1px;
+  min-width: 1px;
+  height: 2rem;
+  border: 0;
+  border-left: 1px solid var(--primary-low);
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a:hover,
+.keyword-glossary-markdown-editor .editor-toolbar a.active {
+  border-color: var(--tertiary);
+  background: var(--tertiary-low);
+  color: var(--tertiary);
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a::before {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-bold::before {
+  content: "B";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-italic::before {
+  content: "I";
+  font-style: italic;
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-heading::before {
+  content: "H";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-quote::before {
+  content: "\"";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-code::before {
+  content: "</>";
+  font-size: 0.72rem;
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-list::before {
+  content: "\2022";
+  font-size: 1rem;
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-olist::before {
+  content: "1.";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-link::before {
+  content: "\1F517";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-preview::before {
+  content: "\25A1";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-split::before {
+  content: "\25E7";
+}
+
+.keyword-glossary-markdown-editor .editor-toolbar a.kg-easymde-guide::before {
+  content: "?";
+}
+
+.keyword-glossary-markdown-editor .CodeMirror,
+.keyword-glossary-markdown-editor .editor-preview-side,
+.keyword-glossary-markdown-editor .editor-preview {
+  min-height: 400px;
+  max-height: min(56vh, 720px);
+}
+
+.keyword-glossary-markdown-editor .CodeMirror {
+  border: 0;
+  background: var(--secondary);
+  color: var(--primary);
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.keyword-glossary-markdown-editor .CodeMirror-scroll {
+  min-height: 400px;
+}
+
+.keyword-glossary-markdown-editor .CodeMirror-cursor {
+  border-left-color: var(--primary);
+}
+
+.keyword-glossary-markdown-editor .CodeMirror-selected {
+  background: var(--tertiary-low);
+}
+
+.keyword-glossary-markdown-editor .editor-preview,
+.keyword-glossary-markdown-editor .editor-preview-side {
+  background: var(--secondary);
+  color: var(--primary);
+  padding: 1rem 1.1rem;
+}
+
+.keyword-glossary-markdown-editor .editor-preview-side {
+  border-left: 1px solid var(--primary-low);
+}
+
+.keyword-glossary-markdown-editor .editor-statusbar {
+  display: none;
+}
+
 @media (max-width: 767px) {
   .keyword-glossary-panel {
     top: auto;

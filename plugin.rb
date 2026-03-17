@@ -9,6 +9,8 @@
 enabled_site_setting :keyword_glossary_enabled
 
 register_asset "stylesheets/common/keyword-glossary.scss"
+register_asset "stylesheets/common/easymde.min.css", :admin
+register_asset "javascripts/vendor/easymde.min.js", :admin
 register_svg_icon "book-open"
 
 add_admin_route "keyword_glossary.title", "keyword-glossary/entries", use_new_show_route: true
