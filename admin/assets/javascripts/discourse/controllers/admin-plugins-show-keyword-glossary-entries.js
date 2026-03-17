@@ -33,6 +33,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   @tracked form = defaultForm();
   @tracked editorOpen = false;
   @tracked uploadingLogo = false;
+  hasLoadedEntries = false;
 
   loadModel(payload) {
     this.entries = payload.entries || [];
@@ -41,6 +42,16 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     this.notice = null;
     this.error = null;
     this.resetEditor();
+    this.hasLoadedEntries = true;
+  }
+
+  @action
+  ensureLoaded() {
+    if (this.hasLoadedEntries || this.loading) {
+      return;
+    }
+
+    this.refreshEntries();
   }
 
   get isEditing() {
@@ -76,6 +87,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       const payload = await ajax("/admin/plugins/keyword-glossary/entries.json");
       this.entries = payload.entries || [];
       this.meta = {};
+      this.hasLoadedEntries = true;
     } catch {
       this.error = I18n.t("keyword_glossary.errors.load_failed");
     } finally {

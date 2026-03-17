@@ -1,5 +1,6 @@
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
+import { didInsert } from "@ember/render-modifiers/modifiers/did-insert";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import DEditor from "discourse/components/d-editor";
 import DPageSubheader from "discourse/components/d-page-subheader";
@@ -7,7 +8,7 @@ import { USER_OPTION_COMPOSITION_MODES } from "discourse/lib/constants";
 import { i18n } from "discourse-i18n";
 
 export default <template>
-  <div class="admin-detail keyword-glossary-admin">
+  <div class="admin-detail keyword-glossary-admin" {{didInsert @controller.ensureLoaded}}>
     <DPageSubheader @title={{i18n "keyword_glossary.manage_nav"}}>
       <:actions as |actions|>
         <actions.Primary
