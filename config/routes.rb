@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 DiscourseKeywordGlossary::Engine.routes.draw do
-  scope "/", defaults: { format: :json } do
+  scope "/", constraints: { format: :json }, defaults: { format: :json } do
     get "entries" => "admin/glossary_entries#index"
     post "entries" => "admin/glossary_entries#create"
     put "entries/:id" => "admin/glossary_entries#update"
