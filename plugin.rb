@@ -11,7 +11,7 @@ enabled_site_setting :keyword_glossary_enabled
 register_asset "stylesheets/common/keyword-glossary.scss"
 register_svg_icon "book-open"
 
-add_admin_route "keyword_glossary.title", "keyword-glossary/entries", use_new_show_route: true
+add_admin_route "keyword_glossary.title", "keyword-glossary", use_new_show_route: true
 
 module ::DiscourseKeywordGlossary
   PLUGIN_NAME = "discourse-keyword-glossary"
