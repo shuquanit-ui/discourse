@@ -1,7 +1,6 @@
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
-import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 import I18n from "discourse-i18n";
 
@@ -33,10 +32,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   @tracked error = null;
   @tracked form = defaultForm();
   @tracked editorOpen = false;
-  @tracked previewTab = "write";
-  @tracked previewHtml = "";
   @tracked uploadingLogo = false;
-  previewTimer = null;
 
   loadModel(payload) {
     this.entries = payload.entries || [];
@@ -55,60 +51,14 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     return this.meta?.has_legacy_entries && !this.meta?.imported_at;
   }
 
-  get isWriteTab() {
-    return this.previewTab === "write";
-  }
-
-  get isPreviewTab() {
-    return this.previewTab === "preview";
-  }
-
-  get previewHtmlSafe() {
-    return htmlSafe(this.previewHtml || "");
-  }
-
   setField(field, value) {
     this.form = { ...this.form, [field]: value };
-    if (field === "description") {
-      this.schedulePreview();
-    }
   }
 
   resetEditor() {
     this.form = defaultForm();
     this.editorOpen = false;
-    this.previewTab = "write";
-    this.previewHtml = "";
     this.uploadingLogo = false;
-    this.clearPreviewTimer();
-  }
-
-  clearPreviewTimer() {
-    if (this.previewTimer) {
-      clearTimeout(this.previewTimer);
-      this.previewTimer = null;
-    }
-  }
-
-  schedulePreview() {
-    this.clearPreviewTimer();
-    this.previewTimer = setTimeout(() => this.updatePreview(), 250);
-  }
-
-  async updatePreview() {
-    this.clearPreviewTimer();
-
-    try {
-      const response = await ajax("/admin/plugins/keyword-glossary/preview.json", {
-        type: "POST",
-        data: {
-          raw: this.form.description || "",
-        },
-      });
-      this.previewHtml = response.cooked || "";
-    } catch {
-      this.previewHtml = `<p>${I18n.t("keyword_glossary.errors.preview_failed")}</p>`;
-    }
   }
 
   buildPayload() {
@@ -143,8 +93,6 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     this.error = null;
     this.form = defaultForm();
     this.editorOpen = true;
-    this.previewTab = "write";
-    await this.updatePreview();
   }
 
   @action
@@ -161,8 +109,6 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       enabled: entry.enabled ?? true,
     };
     this.editorOpen = true;
-    this.previewTab = "write";
-    await this.updatePreview();
   }
 
   @action
@@ -170,14 +116,6 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     this.notice = null;
     this.error = null;
     this.resetEditor();
-  }
-
-  @action
-  switchTab(tab) {
-    this.previewTab = tab;
-    if (tab === "preview") {
-      this.updatePreview();
-    }
   }
 
   @action

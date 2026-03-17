@@ -1,7 +1,9 @@
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
+import DEditor from "discourse/components/d-editor";
 import DPageSubheader from "discourse/components/d-page-subheader";
+import { USER_OPTION_COMPOSITION_MODES } from "discourse/lib/constants";
 import { i18n } from "discourse-i18n";
 
 export default <template>
@@ -232,43 +234,16 @@ export default <template>
               </label>
             </div>
 
-            <div class="keyword-glossary-admin__editor-switch">
-              <button
-                type="button"
-                class={{if @controller.isWriteTab "btn btn-primary btn-small" "btn btn-default btn-small"}}
-                {{on "click" (fn @controller.switchTab "write")}}
-              >
-                {{i18n "keyword_glossary.markdown_write"}}
-              </button>
-              <button
-                type="button"
-                class={{if @controller.isPreviewTab "btn btn-primary btn-small" "btn btn-default btn-small"}}
-                {{on "click" (fn @controller.switchTab "preview")}}
-              >
-                {{i18n "keyword_glossary.markdown_preview"}}
-              </button>
-            </div>
-
             <div class="keyword-glossary-admin__markdown-layout">
-              <label class="keyword-glossary-admin__field keyword-glossary-admin__field--full">
+              <div class="keyword-glossary-admin__field keyword-glossary-admin__field--full">
                 <span>{{i18n "keyword_glossary.description"}}</span>
-                <textarea
-                  class="keyword-glossary-admin__markdown-input"
-                  rows="14"
-                  hidden={{@controller.isPreviewTab}}
-                  {{on "input" @controller.updateDescription}}
-                >{{@controller.form.description}}</textarea>
-              </label>
-
-              <div
-                class="keyword-glossary-admin__preview cooked"
-                hidden={{@controller.isWriteTab}}
-              >
-                {{#if @controller.previewHtml}}
-                  {{@controller.previewHtmlSafe}}
-                {{else}}
-                  <p>{{i18n "keyword_glossary.preview_placeholder"}}</p>
-                {{/if}}
+                <DEditor
+                  @value={{@controller.form.description}}
+                  @change={{@controller.updateDescription}}
+                  @showLink={{true}}
+                  @processPreview={{true}}
+                  @forceEditorMode={{USER_OPTION_COMPOSITION_MODES.rich}}
+                />
               </div>
             </div>
 
