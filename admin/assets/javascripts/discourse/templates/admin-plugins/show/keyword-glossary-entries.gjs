@@ -1,8 +1,8 @@
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
+import DEditor from "discourse/components/d-editor";
 import DPageSubheader from "discourse/components/d-page-subheader";
-import KeywordGlossaryMarkdownEditor from "discourse/components/keyword-glossary-markdown-editor";
 import { i18n } from "discourse-i18n";
 
 export default <template>
@@ -223,9 +223,11 @@ export default <template>
                 <div class="keyword-glossary-admin__field keyword-glossary-admin__field--full">
                   <span>{{i18n "keyword_glossary.description"}}</span>
                   <div class="keyword-glossary-admin__editor-shell">
-                    <KeywordGlossaryMarkdownEditor
+                    <DEditor
                       @value={{@controller.form.description}}
                       @change={{@controller.updateDescription}}
+                      @showLink={{true}}
+                      @processPreview={{true}}
                     />
                   </div>
                 </div>
