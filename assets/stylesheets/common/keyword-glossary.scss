@@ -115,6 +115,7 @@ body.keyword-glossary-panel-open {
   color: var(--primary);
   font-size: 0.95rem;
   line-height: 1.7;
+  overflow-x: auto;
 }
 
 .keyword-glossary-panel__body > :first-child {
@@ -134,6 +135,64 @@ body.keyword-glossary-panel-open {
   word-break: break-word;
 }
 
+.keyword-glossary-panel__body h1,
+.keyword-glossary-panel__body h2,
+.keyword-glossary-panel__body h3,
+.keyword-glossary-panel__body h4,
+.keyword-glossary-panel__body h5,
+.keyword-glossary-panel__body h6 {
+  margin-top: 1.4rem;
+  margin-bottom: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.keyword-glossary-panel__body p,
+.keyword-glossary-panel__body ul,
+.keyword-glossary-panel__body ol,
+.keyword-glossary-panel__body blockquote,
+.keyword-glossary-panel__body pre,
+.keyword-glossary-panel__body table {
+  margin: 0 0 1rem;
+}
+
+.keyword-glossary-panel__body blockquote {
+  margin-left: 0;
+  padding: 0 1rem;
+  color: var(--primary-medium);
+  border-left: 0.25rem solid var(--primary-low);
+}
+
+.keyword-glossary-panel__body table {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.keyword-glossary-panel__body th,
+.keyword-glossary-panel__body td {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--primary-low);
+}
+
+.keyword-glossary-panel__body th {
+  font-weight: 600;
+  background: var(--primary-very-low);
+}
+
+.keyword-glossary-panel__body code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+  background: var(--primary-very-low);
+}
+
+.keyword-glossary-panel__body pre code {
+  display: block;
+  padding: 0.9rem 1rem;
+  background: transparent;
+}
+
 .keyword-glossary-panel__feedback {
   display: flex;
   align-items: center;
@@ -147,7 +206,9 @@ body.keyword-glossary-panel-open {
 .keyword-glossary-panel__vote-group {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .keyword-glossary-panel__vote,
@@ -163,11 +224,29 @@ body.keyword-glossary-panel-open {
   padding: 0.5rem 0.75rem;
 }
 
+.keyword-glossary-panel__vote {
+  flex: 1 1 0;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.keyword-glossary-panel__correction-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--primary-medium);
+  padding-right: 0;
+}
+
 .keyword-glossary-panel__vote.is-active,
 .keyword-glossary-panel__correction-toggle.is-active {
   border-color: var(--tertiary);
   color: var(--tertiary);
   background: var(--tertiary-low);
+}
+
+.keyword-glossary-panel__correction-toggle.is-active {
+  border: 1px solid var(--tertiary);
+  padding-right: 0.75rem;
 }
 
 .keyword-glossary-panel__feedback-meta {
@@ -204,6 +283,7 @@ body.keyword-glossary-panel-open {
   padding: 0 1.1rem 1.1rem;
   border-top: 1px solid var(--primary-low);
   background: var(--secondary);
+  flex: 0 0 auto;
 }
 
 .keyword-glossary-panel__link {
@@ -245,14 +325,23 @@ body.keyword-glossary-panel-open {
   }
 
   .keyword-glossary-panel__feedback {
-    flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
 
-  .keyword-glossary-panel__vote-group,
   .keyword-glossary-panel__correction-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .keyword-glossary-panel__vote-group {
+    min-width: 0;
+  }
+
+  .keyword-glossary-panel__vote {
+    min-width: 0;
+    font-size: 0.82rem;
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
   }
 
   .keyword-glossary-panel__footer {
@@ -279,6 +368,12 @@ body.keyword-glossary-panel-open {
   border: 1px solid var(--primary-low);
   background: var(--primary-very-low);
   flex: 0 0 auto;
+}
+
+.keyword-glossary-admin__logo--large {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
 }
 
 .keyword-glossary-admin__panel {
@@ -415,6 +510,55 @@ body.keyword-glossary-panel-open {
   color: var(--primary-medium);
   display: block;
   margin-top: 0.25rem;
+}
+
+.keyword-glossary-admin__upload-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.keyword-glossary-admin__upload-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.keyword-glossary-admin__logo-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--primary-low);
+  border-radius: 12px;
+  background: var(--primary-very-low);
+  word-break: break-all;
+}
+
+.keyword-glossary-admin__preview {
+  line-height: 1.7;
+}
+
+.keyword-glossary-admin__preview blockquote {
+  margin-left: 0;
+  padding: 0 1rem;
+  color: var(--primary-medium);
+  border-left: 0.25rem solid var(--primary-low);
+}
+
+.keyword-glossary-admin__preview table {
+  display: block;
+  overflow-x: auto;
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.keyword-glossary-admin__preview th,
+.keyword-glossary-admin__preview td {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--primary-low);
 }
 
 .keyword-glossary-admin__editor-switch {

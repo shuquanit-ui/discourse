@@ -239,6 +239,7 @@ function renderPanel(root, entry) {
   const body = root.querySelector(".keyword-glossary-panel__body");
   const link = root.querySelector(".keyword-glossary-panel__link");
   const logo = root.querySelector(".keyword-glossary-panel__logo");
+  const footer = root.querySelector(".keyword-glossary-panel__footer");
 
   term.textContent = entry.term;
   body.innerHTML = entry.description_cooked || "";
@@ -266,10 +267,12 @@ function renderPanel(root, entry) {
     link.href = entry.link_url;
     link.textContent = I18n.t("keyword_glossary.popup_link") || "View details";
     link.hidden = false;
+    footer.hidden = false;
   } else {
     link.hidden = true;
     link.removeAttribute("href");
     link.textContent = "";
+    footer.hidden = true;
   }
 
   renderFeedback(root, entry);

@@ -182,15 +182,46 @@ export default <template>
                 />
               </label>
 
-              <label class="keyword-glossary-admin__field">
+              <div class="keyword-glossary-admin__field">
                 <span>{{i18n "keyword_glossary.logo_url"}}</span>
-                <input
-                  type="url"
-                  value={{@controller.form.logo_url}}
-                  {{on "input" @controller.updateLogoUrl}}
-                />
+                <div class="keyword-glossary-admin__upload-row">
+                  <label class="btn btn-default btn-small keyword-glossary-admin__upload-button">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      {{on "change" @controller.uploadLogo}}
+                    />
+                    {{if
+                      @controller.uploadingLogo
+                      (i18n "keyword_glossary.uploading_logo")
+                      (i18n "keyword_glossary.upload_logo")
+                    }}
+                  </label>
+                  {{#if @controller.form.logo_url}}
+                    <button
+                      type="button"
+                      class="btn btn-default btn-small"
+                      {{on "click" @controller.clearLogo}}
+                    >
+                      {{i18n "keyword_glossary.clear_logo"}}
+                    </button>
+                  {{/if}}
+                </div>
+                {{#if @controller.form.logo_url}}
+                  <div class="keyword-glossary-admin__logo-preview">
+                    <img
+                      class="keyword-glossary-admin__logo keyword-glossary-admin__logo--large"
+                      src={{@controller.form.logo_url}}
+                      alt={{@controller.form.term}}
+                    />
+                    <div class="keyword-glossary-admin__muted">
+                      {{@controller.form.logo_url}}
+                    </div>
+                  </div>
+                {{/if}}
                 <small>{{i18n "keyword_glossary.logo_url_hint"}}</small>
-              </label>
+              </div>
 
               <label class="keyword-glossary-admin__field">
                 <span>{{i18n "keyword_glossary.aliases"}}</span>

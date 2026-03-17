@@ -35,6 +35,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   @tracked editorOpen = false;
   @tracked previewTab = "write";
   @tracked previewHtml = "";
+  @tracked uploadingLogo = false;
   previewTimer = null;
 
   loadModel(payload) {
@@ -78,6 +79,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     this.editorOpen = false;
     this.previewTab = "write";
     this.previewHtml = "";
+    this.uploadingLogo = false;
     this.clearPreviewTimer();
   }
 
@@ -199,8 +201,42 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   }
 
   @action
-  updateLogoUrl(event) {
-    this.setField("logo_url", event.target.value);
+  async uploadLogo(event) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.uploadingLogo = true;
+    this.error = null;
+
+    try {
+      const formData = new FormData();
+      formData.append("type", "composer");
+      formData.append("synchronous", "true");
+      formData.append("files[]", file);
+
+      const response = await ajax("/uploads.json", {
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+      });
+
+      const upload = response?.files?.[0] || response;
+      this.setField("logo_url", upload?.url || "");
+    } catch {
+      this.error = I18n.t("keyword_glossary.errors.logo_upload_failed");
+    } finally {
+      this.uploadingLogo = false;
+      event.target.value = "";
+    }
+  }
+
+  @action
+  clearLogo() {
+    this.setField("logo_url", "");
   }
 
   @action
