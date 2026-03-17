@@ -13,6 +13,10 @@ end
 Discourse::Application.routes.draw do
   mount ::DiscourseKeywordGlossary::Engine, at: "/admin/plugins/discourse-keyword-glossary"
 
+  get "/admin/plugins/discourse-keyword-glossary/settings" =>
+        "admin/plugins#show",
+      plugin_id: "discourse-keyword-glossary",
+      constraints: lambda { |request| request.format.html? }
   get "/admin/plugins/discourse-keyword-glossary/entries" =>
         "admin/plugins#show",
       plugin_id: "discourse-keyword-glossary",
