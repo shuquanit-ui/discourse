@@ -3,7 +3,6 @@ import { on } from "@ember/modifier";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import DEditor from "discourse/components/d-editor";
 import DPageSubheader from "discourse/components/d-page-subheader";
-import { USER_OPTION_COMPOSITION_MODES } from "discourse/lib/constants";
 import { i18n } from "discourse-i18n";
 
 export default <template>
@@ -229,7 +228,6 @@ export default <template>
                       @change={{@controller.updateDescription}}
                       @showLink={{true}}
                       @processPreview={{true}}
-                      @forceEditorMode={{USER_OPTION_COMPOSITION_MODES.rich}}
                     />
                   </div>
                 </div>

@@ -35,6 +35,7 @@ zh_CN:
       aliases_inline: "别名"
       vote_up: "有帮助"
       vote_down: "没帮助"
+      login_to_vote: "登录后才能反馈"
       markdown_editor: "Markdown 编辑"
       markdown_write: "编写"
       markdown_preview: "预览"

@@ -35,6 +35,7 @@ en:
       aliases_inline: "Aliases"
       vote_up: "Helpful"
       vote_down: "Not helpful"
+      login_to_vote: "Sign in to vote"
       markdown_editor: "Markdown editor"
       markdown_write: "Write"
       markdown_preview: "Preview"

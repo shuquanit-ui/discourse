@@ -52,4 +52,30 @@ RSpec.describe "Discourse Keyword Glossary" do
       )
     end
   end
+
+  describe "POST /keyword-glossary/entries/:id/vote" do
+    let!(:entry) do
+      DiscourseKeywordGlossary::GlossaryEntry.create!(
+        term: "RAG",
+        aliases: ["Retrieval"],
+        description: "Retrieval augmented generation",
+        enabled: true,
+      )
+    end
+
+    it "rejects guests" do
+      post "/keyword-glossary/entries/#{entry.id}/vote", params: { value: 1 }
+
+      expect(response.status).to eq(403)
+    end
+
+    it "allows signed-in users" do
+      sign_in(admin)
+
+      post "/keyword-glossary/entries/#{entry.id}/vote", params: { value: 1 }
+
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["upvotes_count"]).to eq(1)
+    end
+  end
 end

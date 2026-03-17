@@ -27,17 +27,9 @@ module DiscourseKeywordGlossary
     private
 
     def load_votes(entries)
-      return GlossaryVote.none if entries.blank?
+      return GlossaryVote.none if entries.blank? || !current_user
 
-      if current_user
-        GlossaryVote.where(glossary_entry_id: entries.pluck(:id), user_id: current_user.id)
-      else
-        GlossaryVote.where(glossary_entry_id: entries.pluck(:id), session_key: session_key)
-      end
-    end
-
-    def session_key
-      session.id.to_s.presence || request.session_options[:id].to_s.presence
+      GlossaryVote.where(glossary_entry_id: entries.pluck(:id), user_id: current_user.id)
     end
   end
 end

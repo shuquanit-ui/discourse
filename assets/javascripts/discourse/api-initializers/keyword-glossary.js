@@ -21,6 +21,7 @@ const state = {
   loaded: false,
   panelOpen: false,
   activeEntryId: null,
+  canVote: false,
 };
 
 function escapeRegExp(text) {
@@ -170,17 +171,24 @@ function hidePanel(root) {
 function renderFeedback(root, entry) {
   const upButton = root.querySelector("[data-keyword-glossary-vote='1']");
   const downButton = root.querySelector("[data-keyword-glossary-vote='-1']");
+  const voteGroup = root.querySelector(".keyword-glossary-panel__vote-group");
   const meta = root.querySelector(".keyword-glossary-panel__feedback-meta");
 
-  if (!upButton || !downButton || !meta) {
+  if (!upButton || !downButton || !voteGroup || !meta) {
     return;
   }
 
+  const votingEnabled = state.canVote;
+
+  voteGroup.hidden = false;
+  upButton.disabled = !votingEnabled;
+  downButton.disabled = !votingEnabled;
   upButton.classList.toggle("is-active", entry.current_vote === 1);
   downButton.classList.toggle("is-active", entry.current_vote === -1);
   upButton.textContent = `👍 ${I18n.t("keyword_glossary.vote_up")} (${entry.upvotes_count || 0})`;
   downButton.textContent = `👎 ${I18n.t("keyword_glossary.vote_down")} (${entry.downvotes_count || 0})`;
-  meta.textContent = "";
+  meta.hidden = votingEnabled;
+  meta.textContent = votingEnabled ? "" : I18n.t("keyword_glossary.login_to_vote");
 }
 
 function renderPanel(root, entry) {
@@ -372,6 +380,7 @@ function loadEntries() {
 
 export default apiInitializer("1.8.0", (api) => {
   const siteSettingsService = api.container.lookup("service:site-settings");
+  const currentUser = api.container.lookup("service:current-user");
   const globalSiteSettings = window.Discourse?.SiteSettings || {};
   const readSetting = (key, fallback = null) =>
     siteSettingsService?.[key] ??
@@ -384,6 +393,7 @@ export default apiInitializer("1.8.0", (api) => {
   }
 
   const panel = createPanel(Number(readSetting("keyword_glossary_max_width", 320) || 320));
+  state.canVote = Boolean(currentUser?.currentUser || currentUser?.id);
   loadEntries();
 
   document.addEventListener("click", (event) => {
@@ -406,6 +416,10 @@ export default apiInitializer("1.8.0", (api) => {
 
     if (voteButton && state.activeEntryId) {
       event.preventDefault();
+      if (!state.canVote) {
+        popupAjax(I18n.t("keyword_glossary.login_to_vote"));
+        return;
+      }
       submitVote(panel, state.activeEntryId, Number(voteButton.dataset.keywordGlossaryVote)).catch(
         () => popupAjax(I18n.t("keyword_glossary.errors.vote_failed"))
       );

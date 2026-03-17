@@ -5,6 +5,7 @@ module DiscourseKeywordGlossary
     requires_plugin DiscourseKeywordGlossary::PLUGIN_NAME
 
     before_action :ensure_entry
+    before_action :ensure_logged_in, only: :vote
 
     def vote
       value = params.require(:value).to_i
@@ -20,7 +21,7 @@ module DiscourseKeywordGlossary
         else
           @entry.votes.create!(
             user: current_user,
-            session_key: current_user ? nil : session_key,
+            session_key: nil,
             value: value,
           )
         end
@@ -46,11 +47,7 @@ module DiscourseKeywordGlossary
     end
 
     def find_vote
-      if current_user
-        @entry.votes.find_by(user_id: current_user.id)
-      else
-        @entry.votes.find_by(session_key: session_key)
-      end
+      @entry.votes.find_by(user_id: current_user.id)
     end
 
     def current_vote
