@@ -18,21 +18,6 @@ export default <template>
       </:actions>
     </DPageSubheader>
 
-    <div class="keyword-glossary-admin__page-nav">
-      <a
-        href="/admin/plugins/keyword-glossary"
-        class="keyword-glossary-admin__page-nav-link"
-      >
-        {{i18n "keyword_glossary.settings_nav"}}
-      </a>
-      <a
-        href="/admin/plugins/keyword-glossary/entries"
-        class="keyword-glossary-admin__page-nav-link is-active"
-      >
-        {{i18n "keyword_glossary.manage_nav"}}
-      </a>
-    </div>
-
     {{#if @controller.notice}}
       <div class="alert alert-info">{{@controller.notice}}</div>
     {{/if}}
