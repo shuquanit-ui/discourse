@@ -1,19 +1,26 @@
-import { apiInitializer } from "discourse/lib/api";
+import { withPluginApi } from "discourse/lib/plugin-api";
 
 const PLUGIN_ID = "keyword-glossary";
 
-export default apiInitializer("1.30.0", (api) => {
-  const currentUser = api.getCurrentUser();
+export default {
+  name: "keyword-glossary-admin-plugin-configuration-nav",
 
-  if (!currentUser?.admin) {
-    return;
-  }
+  initialize(container) {
+    const currentUser = container.lookup("service:current-user");
 
-  api.addAdminPluginConfigurationNav(PLUGIN_ID, [
-    {
-      route: "adminPlugins.show.keyword-glossary-entries",
-      label: "keyword_glossary.manage_nav",
-      description: "keyword_glossary.manage_nav_description",
-    },
-  ]);
-});
+    if (!currentUser?.admin) {
+      return;
+    }
+
+    withPluginApi("1.30.0", (api) => {
+      api.setAdminPluginIcon(PLUGIN_ID, "book-open");
+      api.addAdminPluginConfigurationNav(PLUGIN_ID, [
+        {
+          route: "adminPlugins.show.keyword-glossary-entries",
+          label: "keyword_glossary.manage_nav",
+          description: "keyword_glossary.manage_nav_description",
+        },
+      ]);
+    });
+  },
+};

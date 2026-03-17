@@ -3,6 +3,7 @@ en:
     keyword_glossary:
       title: "Keyword Glossary"
       nav_title: "Keyword Glossary"
+      settings_nav: "Settings"
       manage_nav: "Entries"
       manage_nav_description: "Create, edit, enable, or delete glossary entries"
       empty: "No glossary entries yet."

@@ -75,11 +75,13 @@ body.keyword-glossary-panel-open {
 }
 
 .keyword-glossary-panel__content {
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   padding: 1.2rem 1.1rem 1rem;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
 
 .keyword-glossary-panel__header {
@@ -116,7 +118,10 @@ body.keyword-glossary-panel-open {
   color: var(--primary);
   font-size: 0.95rem;
   line-height: 1.7;
-  overflow-x: hidden;
+  overflow: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+  padding-right: 0.15rem;
 }
 
 .keyword-glossary-panel__body > :first-child {
@@ -199,9 +204,10 @@ body.keyword-glossary-panel-open {
   align-items: center;
   justify-content: flex-start;
   gap: 0.75rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin-top: 0;
+  padding-top: 0.95rem;
   border-top: 1px solid var(--primary-low);
+  flex: 0 0 auto;
 }
 
 .keyword-glossary-panel__vote-group {
@@ -307,6 +313,32 @@ body.keyword-glossary-panel-open {
 
 .keyword-glossary-admin__list {
   overflow-x: auto;
+}
+
+.keyword-glossary-admin__page-nav {
+  display: flex;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+.keyword-glossary-admin__page-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--primary-low);
+  border-radius: 999px;
+  background: var(--secondary);
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.keyword-glossary-admin__page-nav-link.is-active {
+  border-color: var(--tertiary);
+  background: var(--tertiary-low);
+  color: var(--tertiary);
 }
 
 .keyword-glossary-admin__entry-head {
@@ -419,6 +451,7 @@ body.keyword-glossary-panel-open {
   justify-content: space-between;
   gap: 1rem;
   padding: 1.15rem 1.15rem 0;
+  flex: 0 0 auto;
 }
 
 .keyword-glossary-admin__modal-head h2 {
@@ -427,7 +460,19 @@ body.keyword-glossary-panel-open {
 
 .keyword-glossary-admin__modal-body {
   padding: 1rem 1.15rem 1.15rem;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.keyword-glossary-admin__modal-scroll {
+  min-height: 0;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding-right: 0.15rem;
 }
 
 .keyword-glossary-admin__form-grid {
@@ -495,25 +540,41 @@ body.keyword-glossary-panel-open {
 .keyword-glossary-admin__markdown-layout {
   display: grid;
   gap: 0.85rem;
+  min-height: 0;
 }
 
+.keyword-glossary-admin__editor-shell,
 .keyword-glossary-admin__markdown-layout .d-editor {
   border: 1px solid var(--primary-low);
   border-radius: 12px;
   overflow: hidden;
+  background: var(--secondary);
 }
 
 .keyword-glossary-admin__markdown-layout .d-editor-container {
-  min-height: 420px;
+  min-height: 520px;
 }
 
 .keyword-glossary-admin__markdown-layout .d-editor-input,
 .keyword-glossary-admin__markdown-layout .d-editor-preview-wrapper {
-  min-height: 360px;
+  min-height: 460px;
 }
 
 .keyword-glossary-admin__markdown-layout .d-editor-preview-wrapper {
   overflow: auto;
+}
+
+.keyword-glossary-admin__markdown-layout .toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--secondary);
+  border-bottom: 1px solid var(--primary-low);
+}
+
+.keyword-glossary-admin__markdown-layout .d-editor-textarea-wrapper,
+.keyword-glossary-admin__markdown-layout .d-editor-preview-wrapper {
+  background: var(--secondary);
 }
 
 .keyword-glossary-admin__checkbox {
@@ -525,7 +586,12 @@ body.keyword-glossary-panel-open {
 
 .keyword-glossary-admin__form-actions {
   display: flex;
-  gap: 0.5rem;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--primary-low);
+  background: var(--secondary);
+  flex: 0 0 auto;
 }
 
 @media (max-width: 800px) {
@@ -552,5 +618,24 @@ body.keyword-glossary-panel-open {
 
   .keyword-glossary-admin__actions {
     min-width: 180px;
+  }
+
+  .keyword-glossary-admin__page-nav {
+    flex-wrap: wrap;
+  }
+
+  .keyword-glossary-admin__markdown-layout .d-editor-container {
+    min-height: 380px;
+  }
+
+  .keyword-glossary-admin__markdown-layout .d-editor-input,
+  .keyword-glossary-admin__markdown-layout .d-editor-preview-wrapper {
+    min-height: 320px;
+  }
+
+  .keyword-glossary-admin__form-actions {
+    position: sticky;
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 }

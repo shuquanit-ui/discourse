@@ -29,6 +29,21 @@ export default <template>
       </:actions>
     </DPageSubheader>
 
+    <div class="keyword-glossary-admin__page-nav">
+      <a
+        href="/admin/plugins/keyword-glossary"
+        class="keyword-glossary-admin__page-nav-link"
+      >
+        {{i18n "keyword_glossary.settings_nav"}}
+      </a>
+      <a
+        href="/admin/plugins/keyword-glossary/entries"
+        class="keyword-glossary-admin__page-nav-link is-active"
+      >
+        {{i18n "keyword_glossary.manage_nav"}}
+      </a>
+    </div>
+
     {{#if @controller.notice}}
       <div class="alert alert-info">{{@controller.notice}}</div>
     {{/if}}
@@ -164,7 +179,8 @@ export default <template>
           </div>
 
           <form class="keyword-glossary-admin__modal-body" {{on "submit" @controller.saveEntry}}>
-            <div class="keyword-glossary-admin__form-grid">
+            <div class="keyword-glossary-admin__modal-scroll">
+              <div class="keyword-glossary-admin__form-grid">
               <label class="keyword-glossary-admin__field">
                 <span>{{i18n "keyword_glossary.term"}}</span>
                 <input
@@ -232,29 +248,32 @@ export default <template>
                 >{{@controller.form.aliasesText}}</textarea>
                 <small>{{i18n "keyword_glossary.aliases_hint"}}</small>
               </label>
-            </div>
-
-            <div class="keyword-glossary-admin__markdown-layout">
-              <div class="keyword-glossary-admin__field keyword-glossary-admin__field--full">
-                <span>{{i18n "keyword_glossary.description"}}</span>
-                <DEditor
-                  @value={{@controller.form.description}}
-                  @change={{@controller.updateDescription}}
-                  @showLink={{true}}
-                  @processPreview={{true}}
-                  @forceEditorMode={{USER_OPTION_COMPOSITION_MODES.rich}}
-                />
               </div>
-            </div>
 
-            <label class="keyword-glossary-admin__checkbox">
-              <input
-                type="checkbox"
-                checked={{@controller.form.enabled}}
-                {{on "change" @controller.toggleFormEnabled}}
-              />
-              <span>{{i18n "keyword_glossary.enabled"}}</span>
-            </label>
+              <div class="keyword-glossary-admin__markdown-layout">
+                <div class="keyword-glossary-admin__field keyword-glossary-admin__field--full">
+                  <span>{{i18n "keyword_glossary.description"}}</span>
+                  <div class="keyword-glossary-admin__editor-shell">
+                    <DEditor
+                      @value={{@controller.form.description}}
+                      @change={{@controller.updateDescription}}
+                      @showLink={{true}}
+                      @processPreview={{true}}
+                      @forceEditorMode={{USER_OPTION_COMPOSITION_MODES.rich}}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <label class="keyword-glossary-admin__checkbox">
+                <input
+                  type="checkbox"
+                  checked={{@controller.form.enabled}}
+                  {{on "change" @controller.toggleFormEnabled}}
+                />
+                <span>{{i18n "keyword_glossary.enabled"}}</span>
+              </label>
+            </div>
 
             <div class="keyword-glossary-admin__form-actions">
               <button
