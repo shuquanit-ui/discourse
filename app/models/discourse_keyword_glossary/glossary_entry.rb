@@ -42,13 +42,46 @@ module DiscourseKeywordGlossary
       self.term = term.to_s.strip
       self.description = description.to_s.strip
       self.link_url = link_url.to_s.strip.presence
-      self.logo_url = logo_url.to_s.strip.presence
+      self.logo_url = normalize_logo_url(logo_url.to_s.strip.presence)
       self[:aliases] =
         aliases
           .map(&:strip)
           .reject(&:blank?)
           .reject { |item| item.casecmp?(term.to_s.strip) }
           .uniq(&:downcase)
+    end
+
+    def normalize_logo_url(value)
+      return value if value.blank?
+
+      cdn_url = SiteSetting.s3_cdn_url.to_s.strip
+      endpoint = SiteSetting.s3_endpoint.to_s.strip.sub(%r{/\z}, "")
+      bucket = SiteSetting.s3_upload_bucket.to_s.strip
+      source_prefixes = []
+
+      source_prefixes << "#{endpoint}/#{bucket}" if endpoint.present? && bucket.present?
+      source_prefixes << "#{endpoint.sub(%r{\Ahttps?://}, '')}/#{bucket}" if endpoint.present? && bucket.present?
+      source_prefixes << "#{bucket}.#{endpoint.sub(%r{\Ahttps?://}, '')}" if endpoint.present? && bucket.present?
+
+      return value if cdn_url.blank?
+
+      source_prefixes.each do |prefix|
+        next if prefix.blank?
+
+        if value.start_with?("//#{prefix}/")
+          return "#{cdn_url}#{value.delete_prefix("//#{prefix}")}"
+        end
+
+        if value.start_with?("https://#{prefix}/")
+          return "#{cdn_url}#{value.delete_prefix("https://#{prefix}")}"
+        end
+
+        if value.start_with?("http://#{prefix}/")
+          return "#{cdn_url}#{value.delete_prefix("http://#{prefix}")}"
+        end
+      end
+
+      value
     end
 
     def aliases_are_distinct
