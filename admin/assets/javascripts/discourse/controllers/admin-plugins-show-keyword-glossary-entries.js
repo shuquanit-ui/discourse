@@ -22,7 +22,7 @@ function toAliases(text) {
     .filter(Boolean);
 }
 
-export default class AdminPluginsShowKeywordGlossaryController extends Controller {
+export default class AdminPluginsShowKeywordGlossaryEntriesController extends Controller {
   @tracked entries = [];
   @tracked meta = {};
   @tracked loading = false;

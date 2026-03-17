@@ -6,7 +6,7 @@ import { i18n } from "discourse-i18n";
 
 export default <template>
   <div class="admin-detail keyword-glossary-admin">
-    <DPageSubheader @titleLabel={{i18n "keyword_glossary.title"}}>
+    <DPageSubheader @titleLabel="keyword_glossary.manage_nav">
       <:actions as |actions|>
         <actions.Primary
           @action={{@controller.startCreate}}

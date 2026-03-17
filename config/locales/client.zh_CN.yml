@@ -3,6 +3,8 @@ zh_CN:
     keyword_glossary:
       title: "关键词词条"
       nav_title: "关键词词条"
+      manage_nav: "词条管理"
+      manage_nav_description: "创建、编辑、启用或删除关键词词条"
       empty: "还没有词条。"
       new_entry: "新建词条"
       edit_entry: "编辑词条"
