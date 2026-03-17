@@ -18,6 +18,7 @@ const state = {
   regex: null,
   loadPromise: null,
   loaded: false,
+  popupOpenedAt: 0,
 };
 
 function escapeRegExp(text) {
@@ -64,6 +65,14 @@ function buildEntryMap(entries) {
   });
 
   return map;
+}
+
+function isWordChar(character) {
+  return /[A-Za-z0-9_]/.test(character || "");
+}
+
+function needsWordBoundary(term) {
+  return /[A-Za-z0-9]/.test(term || "");
 }
 
 function createPopup(maxWidth) {
@@ -130,9 +139,14 @@ function positionPopup(popup, target) {
 
   popup.style.top = `${Math.max(top, window.scrollY + margin)}px`;
   popup.style.left = `${left}px`;
+  state.popupOpenedAt = Date.now();
 }
 
-function hidePopup(popup) {
+function hidePopup(popup, immediate = false) {
+  if (!immediate && Date.now() - state.popupOpenedAt < 150) {
+    return;
+  }
+
   popup.hidden = true;
 }
 
@@ -154,8 +168,12 @@ function replaceTextNode(textNode, regex, entryMap) {
     }
 
     const entry = entryMap.get(match.toLowerCase());
+    const previousChar = text[index - 1];
+    const nextChar = text[index + match.length];
+    const shouldRespectBoundary =
+      entry && needsWordBoundary(match) && (isWordChar(previousChar) || isWordChar(nextChar));
 
-    if (entry) {
+    if (entry && !shouldRespectBoundary) {
       const trigger = document.createElement("button");
       trigger.type = "button";
       trigger.className = "keyword-glossary-trigger";
@@ -261,7 +279,7 @@ export default apiInitializer("1.8.0", (api) => {
 
     if (!trigger) {
       if (!popup.contains(event.target)) {
-        hidePopup(popup);
+        hidePopup(popup, true);
       }
       return;
     }
