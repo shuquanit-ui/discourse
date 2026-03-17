@@ -1,49 +1,35 @@
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
-import { didInsert } from "@ember/render-modifiers/modifiers/did-insert";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import DEditor from "discourse/components/d-editor";
+import DPageSubheader from "discourse/components/d-page-subheader";
 import { USER_OPTION_COMPOSITION_MODES } from "discourse/lib/constants";
 import { i18n } from "discourse-i18n";
 
 export default <template>
-  <div
-    class="admin-detail keyword-glossary-admin"
-    {{didInsert @controller.ensureLoaded}}
-  >
-    <div class="keyword-glossary-admin__header">
-      <div>
-        <h1>{{i18n "keyword_glossary.manage_nav"}}</h1>
-      </div>
-      <div class="keyword-glossary-admin__header-actions">
-        <a
-          href="/admin/plugins/keyword-glossary/settings"
-          class="btn btn-default"
-        >
-          {{i18n "keyword_glossary.settings_nav"}}
-        </a>
-        <button
-          type="button"
-          class="btn btn-primary"
-          {{on "click" @controller.startCreate}}
-        >
-          {{i18n "keyword_glossary.new_entry"}}
-        </button>
-      </div>
-    </div>
+  <div class="admin-detail keyword-glossary-admin">
+    <DPageSubheader @title={{i18n "keyword_glossary.manage_nav"}}>
+      <:actions as |actions|>
+        <actions.Primary
+          @action={{@controller.startCreate}}
+          @icon="plus"
+          @label="keyword_glossary.new_entry"
+        />
+      </:actions>
+    </DPageSubheader>
 
     <div class="keyword-glossary-admin__page-nav">
+      <a
+        href="/admin/plugins/keyword-glossary"
+        class="keyword-glossary-admin__page-nav-link"
+      >
+        {{i18n "keyword_glossary.settings_nav"}}
+      </a>
       <a
         href="/admin/plugins/keyword-glossary/entries"
         class="keyword-glossary-admin__page-nav-link is-active"
       >
         {{i18n "keyword_glossary.manage_nav"}}
-      </a>
-      <a
-        href="/admin/plugins/keyword-glossary/settings"
-        class="keyword-glossary-admin__page-nav-link"
-      >
-        {{i18n "keyword_glossary.settings_nav"}}
       </a>
     </div>
 
