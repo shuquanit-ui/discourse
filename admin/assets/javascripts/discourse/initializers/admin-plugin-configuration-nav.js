@@ -1,6 +1,6 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
-const PLUGIN_ID = "keyword-glossary";
+const PLUGIN_ID = "discourse-keyword-glossary";
 
 export default {
   name: "keyword-glossary-admin-plugin-configuration-nav",

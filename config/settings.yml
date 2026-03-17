@@ -2,9 +2,6 @@ plugins:
   keyword_glossary_enabled:
     default: true
     client: true
-  keyword_glossary_entries:
-    type: list
-    default: ""
   keyword_glossary_trigger:
     default: "click"
     type: enum

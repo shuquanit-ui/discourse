@@ -1,7 +1,6 @@
 en:
   site_settings:
     keyword_glossary_enabled: "Enable keyword glossary"
-    keyword_glossary_entries: "Legacy glossary import source (deprecated)"
     keyword_glossary_trigger: "Glossary trigger mode"
     keyword_glossary_max_width: "Desktop glossary drawer max width (px)"
   keyword_glossary:

@@ -8,8 +8,6 @@ module DiscourseKeywordGlossary
       before_action :ensure_entry, only: %i[update destroy]
 
       def index
-        LegacyImporter.import_if_needed!
-
         entries = GlossaryEntry.ordered
 
         render_json_dump(
@@ -18,7 +16,6 @@ module DiscourseKeywordGlossary
               entries,
               each_serializer: AdminGlossaryEntrySerializer,
             ).as_json,
-          meta: LegacyImporter.status,
         )
       end
 
@@ -39,12 +36,6 @@ module DiscourseKeywordGlossary
       def destroy
         @entry.destroy!
         render_json_dump(success: true)
-      end
-
-      def import_legacy
-        render_json_dump(meta: LegacyImporter.import_now!)
-      rescue ActiveRecord::RecordInvalid => e
-        render_json_error(e.record.errors.full_messages.join("\n"))
       end
 
       def preview

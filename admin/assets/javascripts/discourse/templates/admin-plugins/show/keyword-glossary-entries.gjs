@@ -8,24 +8,13 @@ import { i18n } from "discourse-i18n";
 
 export default <template>
   <div class="admin-detail keyword-glossary-admin">
-    <DPageSubheader @titleLabel="keyword_glossary.manage_nav">
+    <DPageSubheader @title={{i18n "keyword_glossary.manage_nav"}}>
       <:actions as |actions|>
         <actions.Primary
           @action={{@controller.startCreate}}
           @icon="plus"
           @label="keyword_glossary.new_entry"
         />
-        {{#if @controller.hasLegacyImport}}
-          <actions.Wrapped>
-            <button
-              type="button"
-              class="btn btn-default"
-              {{on "click" @controller.importLegacy}}
-            >
-              {{i18n "keyword_glossary.import_legacy"}}
-            </button>
-          </actions.Wrapped>
-        {{/if}}
       </:actions>
     </DPageSubheader>
 
@@ -50,10 +39,6 @@ export default <template>
 
     {{#if @controller.error}}
       <div class="alert alert-error">{{@controller.error}}</div>
-    {{/if}}
-
-    {{#if @controller.hasLegacyImport}}
-      <div class="alert alert-info">{{i18n "keyword_glossary.legacy_ready"}}</div>
     {{/if}}
 
     <ConditionalLoadingSpinner @condition={{@controller.loading}} />

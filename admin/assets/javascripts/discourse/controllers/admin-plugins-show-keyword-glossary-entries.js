@@ -36,7 +36,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
 
   loadModel(payload) {
     this.entries = payload.entries || [];
-    this.meta = payload.meta || {};
+    this.meta = {};
     this.loading = false;
     this.notice = null;
     this.error = null;
@@ -45,10 +45,6 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
 
   get isEditing() {
     return Boolean(this.form.id);
-  }
-
-  get hasLegacyImport() {
-    return this.meta?.has_legacy_entries && !this.meta?.imported_at;
   }
 
   setField(field, value) {
@@ -79,7 +75,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     try {
       const payload = await ajax("/admin/plugins/keyword-glossary/entries.json");
       this.entries = payload.entries || [];
-      this.meta = payload.meta || {};
+      this.meta = {};
     } catch {
       this.error = I18n.t("keyword_glossary.errors.load_failed");
     } finally {
@@ -267,22 +263,4 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     }
   }
 
-  @action
-  async importLegacy() {
-    this.notice = null;
-    this.error = null;
-
-    try {
-      const response = await ajax("/admin/plugins/keyword-glossary/import-legacy.json", {
-        type: "POST",
-      });
-      this.notice =
-        response?.meta?.imported > 0
-          ? I18n.t("keyword_glossary.import_done")
-          : I18n.t("keyword_glossary.import_skipped");
-      await this.refreshEntries();
-    } catch {
-      this.error = I18n.t("keyword_glossary.errors.import_failed");
-    }
-  }
 }

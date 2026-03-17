@@ -6,7 +6,6 @@ DiscourseKeywordGlossary::Engine.routes.draw do
     post "entries" => "admin/glossary_entries#create"
     put "entries/:id" => "admin/glossary_entries#update"
     delete "entries/:id" => "admin/glossary_entries#destroy"
-    post "import-legacy" => "admin/glossary_entries#import_legacy"
     post "preview" => "admin/glossary_entries#preview"
   end
 end

@@ -1,7 +1,6 @@
 zh_CN:
   site_settings:
     keyword_glossary_enabled: "启用关键词词条弹窗"
-    keyword_glossary_entries: "旧版词条导入源（已废弃）"
     keyword_glossary_trigger: "词条触发方式"
     keyword_glossary_max_width: "桌面词条抽屉最大宽度（像素）"
   keyword_glossary:

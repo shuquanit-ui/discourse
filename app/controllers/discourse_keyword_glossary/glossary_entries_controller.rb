@@ -9,8 +9,6 @@ module DiscourseKeywordGlossary
     def index
       return render_json_dump(entries: []) if !SiteSetting.keyword_glossary_enabled
 
-      LegacyImporter.import_if_needed!
-
       entries = GlossaryEntry.enabled_entries.ordered
       votes = load_votes(entries)
 
