@@ -7,7 +7,7 @@ export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesRoute extend
   }
 
   async model() {
-    return ajax("/admin/plugins/discourse-keyword-glossary/entries.json");
+    return ajax("/admin/plugins/discourse-keyword-glossary/api/entries.json");
   }
 
   setupController(controller, model) {

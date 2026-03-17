@@ -4,6 +4,8 @@ import { tracked } from "@glimmer/tracking";
 import { ajax } from "discourse/lib/ajax";
 import I18n from "discourse-i18n";
 
+const ADMIN_API_BASE = "/admin/plugins/discourse-keyword-glossary/api";
+
 function defaultForm() {
   return {
     id: null,
@@ -108,7 +110,7 @@ export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesController e
     this.error = null;
 
     try {
-      const payload = await ajax("/admin/plugins/discourse-keyword-glossary/entries.json");
+      const payload = await ajax(`${ADMIN_API_BASE}/entries.json`);
       this.entries = payload.entries || [];
       this.notice =
         payload.imported_count > 0
@@ -241,12 +243,12 @@ export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesController e
 
     try {
       if (this.isEditing) {
-        await ajax(`/admin/plugins/discourse-keyword-glossary/entries/${this.form.id}.json`, {
+        await ajax(`${ADMIN_API_BASE}/entries/${this.form.id}.json`, {
           type: "PUT",
           data: payload,
         });
       } else {
-        await ajax("/admin/plugins/discourse-keyword-glossary/entries.json", {
+        await ajax(`${ADMIN_API_BASE}/entries.json`, {
           type: "POST",
           data: payload,
         });
@@ -274,7 +276,7 @@ export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesController e
     this.error = null;
 
     try {
-      await ajax(`/admin/plugins/discourse-keyword-glossary/entries/${entry.id}.json`, {
+      await ajax(`${ADMIN_API_BASE}/entries/${entry.id}.json`, {
         type: "DELETE",
       });
       this.notice = I18n.t("keyword_glossary.delete_success");
@@ -293,7 +295,7 @@ export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesController e
     this.error = null;
 
     try {
-      await ajax(`/admin/plugins/discourse-keyword-glossary/entries/${entry.id}.json`, {
+      await ajax(`${ADMIN_API_BASE}/entries/${entry.id}.json`, {
         type: "PUT",
         data: {
           entry: {
