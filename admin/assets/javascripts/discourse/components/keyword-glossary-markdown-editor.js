@@ -1,7 +1,5 @@
 import Component from "@glimmer/component";
 import { action } from "@ember/object";
-import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { i18n } from "discourse-i18n";
 
 const EASYMDE_CSS_ID = "keyword-glossary-easymde-css";
@@ -53,7 +51,6 @@ function ensureEasyMde() {
 
 export default class KeywordGlossaryMarkdownEditor extends Component {
   editor = null;
-  textarea = null;
   lastValue = null;
 
   get toolbar() {
@@ -133,8 +130,6 @@ export default class KeywordGlossaryMarkdownEditor extends Component {
 
   @action
   async setup(textarea) {
-    this.textarea = textarea;
-
     if (this.editor) {
       return;
     }
@@ -180,7 +175,7 @@ export default class KeywordGlossaryMarkdownEditor extends Component {
   }
 
   @action
-  syncValue(_element, [value]) {
+  syncValue(value) {
     if (!this.editor) {
       return;
     }
@@ -200,16 +195,5 @@ export default class KeywordGlossaryMarkdownEditor extends Component {
     super.willDestroy(...arguments);
     this.editor?.toTextArea();
     this.editor = null;
-    this.textarea = null;
   }
 }
-
-<template>
-  <div class="keyword-glossary-markdown-editor">
-    <textarea
-      class="keyword-glossary-markdown-editor__textarea"
-      {{didInsert this.setup}}
-      {{didUpdate this.syncValue @value}}
-    >{{@value}}</textarea>
-  </div>
-</template>
