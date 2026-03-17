@@ -58,6 +58,9 @@ zh_CN:
         one: "%{count} 个匹配结果"
         other: "%{count} 个匹配结果"
       empty_filtered: "没有符合当前搜索条件的词条。"
+      imported_notice:
+        one: "已从旧设置自动导入 %{count} 个词条。"
+        other: "已从旧设置自动导入 %{count} 个词条。"
       errors:
         load_failed: "加载词条失败。"
         save_failed: "保存词条失败。"

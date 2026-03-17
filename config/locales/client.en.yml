@@ -58,6 +58,9 @@ en:
         one: "%{count} match"
         other: "%{count} matches"
       empty_filtered: "No entries match the current search."
+      imported_notice:
+        one: "Imported %{count} entry from the legacy setting."
+        other: "Imported %{count} entries from the legacy setting."
       errors:
         load_failed: "Failed to load glossary entries."
         save_failed: "Failed to save glossary entry."

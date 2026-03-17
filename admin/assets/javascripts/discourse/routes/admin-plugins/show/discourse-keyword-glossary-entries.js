@@ -1,13 +1,13 @@
 import { ajax } from "discourse/lib/ajax";
 import DiscourseRoute from "discourse/routes/discourse";
 
-export default class AdminPluginsKeywordGlossaryRoute extends DiscourseRoute {
+export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesRoute extends DiscourseRoute {
   titleToken() {
-    return "Keyword glossary";
+    return "词条管理";
   }
 
   async model() {
-    return ajax("/admin/plugins/keyword-glossary/entries.json");
+    return ajax("/admin/plugins/discourse-keyword-glossary/entries.json");
   }
 
   setupController(controller, model) {

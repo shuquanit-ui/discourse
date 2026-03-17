@@ -34,7 +34,7 @@ RSpec.describe "Discourse Keyword Glossary" do
     before { sign_in(admin) }
 
     it "creates an entry" do
-      post "/admin/plugins/keyword-glossary/entries.json",
+      post "/admin/plugins/discourse-keyword-glossary/entries.json",
            params: {
              entry: {
                term: "Embedding",

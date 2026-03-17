@@ -23,7 +23,7 @@ function toAliases(text) {
     .filter(Boolean);
 }
 
-export default class AdminPluginsKeywordGlossaryController extends Controller {
+export default class AdminPluginsShowDiscourseKeywordGlossaryEntriesController extends Controller {
   @tracked entries = [];
   @tracked loading = false;
   @tracked saving = false;
@@ -37,7 +37,12 @@ export default class AdminPluginsKeywordGlossaryController extends Controller {
   loadModel(payload) {
     this.entries = payload.entries || [];
     this.loading = false;
-    this.notice = null;
+    this.notice =
+      payload.imported_count > 0
+        ? I18n.t("keyword_glossary.imported_notice", {
+            count: payload.imported_count,
+          })
+        : null;
     this.error = null;
     this.resetEditor();
   }
@@ -103,8 +108,14 @@ export default class AdminPluginsKeywordGlossaryController extends Controller {
     this.error = null;
 
     try {
-      const payload = await ajax("/admin/plugins/keyword-glossary/entries.json");
+      const payload = await ajax("/admin/plugins/discourse-keyword-glossary/entries.json");
       this.entries = payload.entries || [];
+      this.notice =
+        payload.imported_count > 0
+          ? I18n.t("keyword_glossary.imported_notice", {
+              count: payload.imported_count,
+            })
+          : this.notice;
     } catch {
       this.error = I18n.t("keyword_glossary.errors.load_failed");
     } finally {
@@ -230,12 +241,12 @@ export default class AdminPluginsKeywordGlossaryController extends Controller {
 
     try {
       if (this.isEditing) {
-        await ajax(`/admin/plugins/keyword-glossary/entries/${this.form.id}.json`, {
+        await ajax(`/admin/plugins/discourse-keyword-glossary/entries/${this.form.id}.json`, {
           type: "PUT",
           data: payload,
         });
       } else {
-        await ajax("/admin/plugins/keyword-glossary/entries.json", {
+        await ajax("/admin/plugins/discourse-keyword-glossary/entries.json", {
           type: "POST",
           data: payload,
         });
@@ -263,7 +274,7 @@ export default class AdminPluginsKeywordGlossaryController extends Controller {
     this.error = null;
 
     try {
-      await ajax(`/admin/plugins/keyword-glossary/entries/${entry.id}.json`, {
+      await ajax(`/admin/plugins/discourse-keyword-glossary/entries/${entry.id}.json`, {
         type: "DELETE",
       });
       this.notice = I18n.t("keyword_glossary.delete_success");
@@ -282,7 +293,7 @@ export default class AdminPluginsKeywordGlossaryController extends Controller {
     this.error = null;
 
     try {
-      await ajax(`/admin/plugins/keyword-glossary/entries/${entry.id}.json`, {
+      await ajax(`/admin/plugins/discourse-keyword-glossary/entries/${entry.id}.json`, {
         type: "PUT",
         data: {
           entry: {
