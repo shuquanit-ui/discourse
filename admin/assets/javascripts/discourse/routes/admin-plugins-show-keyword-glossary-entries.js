@@ -13,5 +13,9 @@ export default class AdminPluginsShowKeywordGlossaryEntriesRoute extends Discour
   setupController(controller, model) {
     super.setupController(controller, model);
     controller.loadModel(model);
+
+    if (!model?.entries?.length) {
+      controller.refreshEntries();
+    }
   }
 }
