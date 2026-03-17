@@ -1,5 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
 
+const PLUGIN_ID = "discourse-keyword-glossary";
+
 export default apiInitializer("1.30.0", (api) => {
   const currentUser = api.getCurrentUser();
 
@@ -7,7 +9,7 @@ export default apiInitializer("1.30.0", (api) => {
     return;
   }
 
-  api.addAdminPluginConfigurationNav("keyword-glossary", [
+  api.addAdminPluginConfigurationNav(PLUGIN_ID, [
     {
       route: "adminPlugins.show.keyword-glossary-entries",
       label: "keyword_glossary.manage_nav",
