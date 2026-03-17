@@ -1,7 +1,7 @@
 import { ajax } from "discourse/lib/ajax";
 import DiscourseRoute from "discourse/routes/discourse";
 
-export default class AdminPluginsShowKeywordGlossaryEntriesRoute extends DiscourseRoute {
+export default class AdminPluginsKeywordGlossaryRoute extends DiscourseRoute {
   titleToken() {
     return "Keyword glossary";
   }
@@ -13,9 +13,5 @@ export default class AdminPluginsShowKeywordGlossaryEntriesRoute extends Discour
   setupController(controller, model) {
     super.setupController(controller, model);
     controller.loadModel(model);
-
-    if (!model?.entries?.length) {
-      controller.refreshEntries();
-    }
   }
 }

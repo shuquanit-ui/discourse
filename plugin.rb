@@ -26,6 +26,5 @@ after_initialize do
   require_relative "app/serializers/discourse_keyword_glossary/public_glossary_entry_serializer"
   require_relative "app/controllers/discourse_keyword_glossary/glossary_entries_controller"
   require_relative "app/controllers/discourse_keyword_glossary/feedback_controller"
-  require_relative "app/controllers/discourse_keyword_glossary/admin/root_controller"
   require_relative "app/controllers/discourse_keyword_glossary/admin/glossary_entries_controller"
 end

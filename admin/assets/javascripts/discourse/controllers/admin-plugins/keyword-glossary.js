@@ -23,9 +23,8 @@ function toAliases(text) {
     .filter(Boolean);
 }
 
-export default class AdminPluginsShowKeywordGlossaryEntriesController extends Controller {
+export default class AdminPluginsKeywordGlossaryController extends Controller {
   @tracked entries = [];
-  @tracked meta = {};
   @tracked loading = false;
   @tracked saving = false;
   @tracked notice = null;
@@ -33,10 +32,10 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   @tracked form = defaultForm();
   @tracked editorOpen = false;
   @tracked uploadingLogo = false;
+  @tracked filterTerm = "";
 
   loadModel(payload) {
     this.entries = payload.entries || [];
-    this.meta = {};
     this.loading = false;
     this.notice = null;
     this.error = null;
@@ -45,6 +44,37 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
 
   get isEditing() {
     return Boolean(this.form.id);
+  }
+
+  get filteredEntries() {
+    const filter = this.filterTerm.trim().toLowerCase();
+
+    if (!filter) {
+      return this.entries;
+    }
+
+    return this.entries.filter((entry) => {
+      const aliases = Array.isArray(entry.aliases) ? entry.aliases : [];
+      return (
+        entry.term?.toLowerCase().includes(filter) ||
+        entry.description?.toLowerCase().includes(filter) ||
+        aliases.some((alias) => alias.toLowerCase().includes(filter))
+      );
+    });
+  }
+
+  get summary() {
+    const total = this.entries.length;
+    const enabled = this.entries.filter((entry) => entry.enabled).length;
+    const filtered = this.filteredEntries.length;
+
+    return {
+      total,
+      enabled,
+      disabled: total - enabled,
+      filtered,
+      hasFilter: Boolean(this.filterTerm.trim()),
+    };
   }
 
   setField(field, value) {
@@ -75,7 +105,6 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     try {
       const payload = await ajax("/admin/plugins/keyword-glossary/entries.json");
       this.entries = payload.entries || [];
-      this.meta = {};
     } catch {
       this.error = I18n.t("keyword_glossary.errors.load_failed");
     } finally {
@@ -84,7 +113,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   }
 
   @action
-  async startCreate() {
+  startCreate() {
     this.notice = null;
     this.error = null;
     this.form = defaultForm();
@@ -92,7 +121,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   }
 
   @action
-  async editEntry(entry) {
+  editEntry(entry) {
     this.notice = null;
     this.error = null;
     this.form = {
@@ -125,13 +154,22 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   }
 
   @action
-  updateDescription(event) {
-    this.setField("description", event.target.value);
+  updateDescription(valueOrEvent) {
+    const value =
+      typeof valueOrEvent === "string"
+        ? valueOrEvent
+        : valueOrEvent?.target?.value || "";
+    this.setField("description", value);
   }
 
   @action
   updateLinkUrl(event) {
     this.setField("link_url", event.target.value);
+  }
+
+  @action
+  updateFilterTerm(event) {
+    this.filterTerm = event.target.value;
   }
 
   @action
@@ -262,5 +300,4 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       this.error = I18n.t("keyword_glossary.errors.save_failed");
     }
   }
-
 }

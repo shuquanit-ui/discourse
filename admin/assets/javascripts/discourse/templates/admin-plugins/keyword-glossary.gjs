@@ -7,7 +7,10 @@ import { i18n } from "discourse-i18n";
 
 export default <template>
   <div class="admin-detail keyword-glossary-admin">
-    <DPageSubheader @title={{i18n "keyword_glossary.manage_nav"}}>
+    <DPageSubheader
+      @title={{i18n "keyword_glossary.manage_nav"}}
+      @description={{i18n "keyword_glossary.manage_nav_description"}}
+    >
       <:actions as |actions|>
         <actions.Primary
           @action={{@controller.startCreate}}
@@ -25,6 +28,33 @@ export default <template>
       <div class="alert alert-error">{{@controller.error}}</div>
     {{/if}}
 
+    <div class="keyword-glossary-admin__toolbar">
+      <input
+        class="keyword-glossary-admin__search"
+        type="search"
+        placeholder={{i18n "keyword_glossary.search_entries"}}
+        value={{@controller.filterTerm}}
+        {{on "input" @controller.updateFilterTerm}}
+      />
+
+      <div class="keyword-glossary-admin__summary">
+        <span class="keyword-glossary-admin__summary-chip">
+          {{i18n "keyword_glossary.total_entries" count=@controller.summary.total}}
+        </span>
+        <span class="keyword-glossary-admin__summary-chip">
+          {{i18n "keyword_glossary.enabled_entries" count=@controller.summary.enabled}}
+        </span>
+        <span class="keyword-glossary-admin__summary-chip">
+          {{i18n "keyword_glossary.disabled_entries" count=@controller.summary.disabled}}
+        </span>
+        {{#if @controller.summary.hasFilter}}
+          <span class="keyword-glossary-admin__summary-chip">
+            {{i18n "keyword_glossary.filtered_entries" count=@controller.summary.filtered}}
+          </span>
+        {{/if}}
+      </div>
+    </div>
+
     <ConditionalLoadingSpinner @condition={{@controller.loading}} />
 
     <section class="keyword-glossary-admin__panel keyword-glossary-admin__list">
@@ -39,7 +69,7 @@ export default <template>
           </tr>
         </thead>
         <tbody>
-          {{#each @controller.entries as |entry|}}
+          {{#each @controller.filteredEntries as |entry|}}
             <tr class="d-table__row">
               <td class="d-table__cell">
                 <div class="keyword-glossary-admin__entry-head">
@@ -78,7 +108,11 @@ export default <template>
                 </div>
               </td>
               <td class="d-table__cell">
-                {{if entry.enabled (i18n "yes_value") (i18n "no_value")}}
+                <span
+                  class="keyword-glossary-admin__status {{if entry.enabled "is-enabled" "is-disabled"}}"
+                >
+                  {{if entry.enabled (i18n "yes_value") (i18n "no_value")}}
+                </span>
               </td>
               <td class="d-table__cell">
                 <div class="keyword-glossary-admin__actions">
@@ -113,7 +147,11 @@ export default <template>
           {{else}}
             <tr>
               <td class="d-table__cell" colspan="5">
-                {{i18n "keyword_glossary.empty"}}
+                {{#if @controller.summary.hasFilter}}
+                  {{i18n "keyword_glossary.empty_filtered"}}
+                {{else}}
+                  {{i18n "keyword_glossary.empty"}}
+                {{/if}}
               </td>
             </tr>
           {{/each}}
@@ -122,7 +160,10 @@ export default <template>
     </section>
 
     {{#if @controller.editorOpen}}
-      <div class="keyword-glossary-admin__modal-backdrop" {{on "click" @controller.closeEditor}}></div>
+      <div
+        class="keyword-glossary-admin__modal-backdrop"
+        {{on "click" @controller.closeEditor}}
+      ></div>
       <section class="keyword-glossary-admin__modal">
         <div class="keyword-glossary-admin__modal-card">
           <div class="keyword-glossary-admin__modal-head">
@@ -147,76 +188,79 @@ export default <template>
             </button>
           </div>
 
-          <form class="keyword-glossary-admin__modal-body" {{on "submit" @controller.saveEntry}}>
+          <form
+            class="keyword-glossary-admin__modal-body"
+            {{on "submit" @controller.saveEntry}}
+          >
             <div class="keyword-glossary-admin__modal-scroll">
               <div class="keyword-glossary-admin__form-grid">
-              <label class="keyword-glossary-admin__field">
-                <span>{{i18n "keyword_glossary.term"}}</span>
-                <input
-                  type="text"
-                  value={{@controller.form.term}}
-                  {{on "input" @controller.updateTerm}}
-                />
-              </label>
+                <label class="keyword-glossary-admin__field">
+                  <span>{{i18n "keyword_glossary.term"}}</span>
+                  <input
+                    type="text"
+                    value={{@controller.form.term}}
+                    {{on "input" @controller.updateTerm}}
+                  />
+                </label>
 
-              <label class="keyword-glossary-admin__field">
-                <span>{{i18n "keyword_glossary.link_url"}}</span>
-                <input
-                  type="url"
-                  value={{@controller.form.link_url}}
-                  {{on "input" @controller.updateLinkUrl}}
-                />
-              </label>
+                <label class="keyword-glossary-admin__field">
+                  <span>{{i18n "keyword_glossary.link_url"}}</span>
+                  <input
+                    type="url"
+                    value={{@controller.form.link_url}}
+                    {{on "input" @controller.updateLinkUrl}}
+                  />
+                </label>
 
-              <div class="keyword-glossary-admin__field">
-                <span>{{i18n "keyword_glossary.logo_url"}}</span>
-                <div class="keyword-glossary-admin__upload-row">
-                  <label class="btn btn-default btn-small keyword-glossary-admin__upload-button">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      hidden
-                      {{on "change" @controller.uploadLogo}}
-                    />
-                    {{if
-                      @controller.uploadingLogo
-                      (i18n "keyword_glossary.uploading_logo")
-                      (i18n "keyword_glossary.upload_logo")
-                    }}
-                  </label>
-                  {{#if @controller.form.logo_url}}
-                    <button
-                      type="button"
-                      class="btn btn-default btn-small"
-                      {{on "click" @controller.clearLogo}}
-                    >
-                      {{i18n "keyword_glossary.clear_logo"}}
-                    </button>
-                  {{/if}}
-                </div>
-                {{#if @controller.form.logo_url}}
-                  <div class="keyword-glossary-admin__logo-preview">
-                    <img
-                      class="keyword-glossary-admin__logo keyword-glossary-admin__logo--large"
-                      src={{@controller.form.logo_url}}
-                      alt={{@controller.form.term}}
-                    />
-                    <div class="keyword-glossary-admin__muted">
-                      {{@controller.form.logo_url}}
-                    </div>
+                <div class="keyword-glossary-admin__field">
+                  <span>{{i18n "keyword_glossary.logo_url"}}</span>
+                  <div class="keyword-glossary-admin__upload-row">
+                    <label class="btn btn-default btn-small keyword-glossary-admin__upload-button">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        {{on "change" @controller.uploadLogo}}
+                      />
+                      {{if
+                        @controller.uploadingLogo
+                        (i18n "keyword_glossary.uploading_logo")
+                        (i18n "keyword_glossary.upload_logo")
+                      }}
+                    </label>
+                    {{#if @controller.form.logo_url}}
+                      <button
+                        type="button"
+                        class="btn btn-default btn-small"
+                        {{on "click" @controller.clearLogo}}
+                      >
+                        {{i18n "keyword_glossary.clear_logo"}}
+                      </button>
+                    {{/if}}
                   </div>
-                {{/if}}
-                <small>{{i18n "keyword_glossary.logo_url_hint"}}</small>
-              </div>
+                  {{#if @controller.form.logo_url}}
+                    <div class="keyword-glossary-admin__logo-preview">
+                      <img
+                        class="keyword-glossary-admin__logo keyword-glossary-admin__logo--large"
+                        src={{@controller.form.logo_url}}
+                        alt={{@controller.form.term}}
+                      />
+                      <div class="keyword-glossary-admin__muted">
+                        {{@controller.form.logo_url}}
+                      </div>
+                    </div>
+                  {{/if}}
+                  <small>{{i18n "keyword_glossary.logo_url_hint"}}</small>
+                </div>
 
-              <label class="keyword-glossary-admin__field">
-                <span>{{i18n "keyword_glossary.aliases"}}</span>
-                <textarea
-                  rows="4"
-                  {{on "input" @controller.updateAliases}}
-                >{{@controller.form.aliasesText}}</textarea>
-                <small>{{i18n "keyword_glossary.aliases_hint"}}</small>
-              </label>
+                <label class="keyword-glossary-admin__field">
+                  <span>{{i18n "keyword_glossary.aliases"}}</span>
+                  <textarea
+                    rows="4"
+                    {{on "input" @controller.updateAliases}}
+                  >{{@controller.form.aliasesText}}</textarea>
+                  <small>{{i18n "keyword_glossary.aliases_hint"}}</small>
+                </label>
               </div>
 
               <div class="keyword-glossary-admin__markdown-layout">

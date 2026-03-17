@@ -392,7 +392,7 @@ export default apiInitializer("1.8.0", (api) => {
     return;
   }
 
-  const panel = createPanel(Number(readSetting("keyword_glossary_max_width", 320) || 320));
+  const panel = createPanel(Number(readSetting("keyword_glossary_max_width", 500) || 500));
   state.canVote = Boolean(currentUser?.currentUser || currentUser?.id);
   loadEntries();
 

@@ -9,7 +9,7 @@ plugins:
       - click
     client: true
   keyword_glossary_max_width:
-    default: 420
+    default: 500
     min: 220
     max: 600
     client: true

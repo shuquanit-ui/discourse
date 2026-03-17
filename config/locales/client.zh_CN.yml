@@ -44,6 +44,20 @@ zh_CN:
       feedback: "反馈"
       stats_votes: "反馈"
       no_aliases: "无别名"
+      search_entries: "搜索词条"
+      total_entries:
+        one: "%{count} 个词条"
+        other: "%{count} 个词条"
+      enabled_entries:
+        one: "%{count} 个启用"
+        other: "%{count} 个启用"
+      disabled_entries:
+        one: "%{count} 个停用"
+        other: "%{count} 个停用"
+      filtered_entries:
+        one: "%{count} 个匹配结果"
+        other: "%{count} 个匹配结果"
+      empty_filtered: "没有符合当前搜索条件的词条。"
       errors:
         load_failed: "加载词条失败。"
         save_failed: "保存词条失败。"

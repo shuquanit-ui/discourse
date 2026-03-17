@@ -44,6 +44,20 @@ en:
       feedback: "Feedback"
       stats_votes: "Votes"
       no_aliases: "No aliases"
+      search_entries: "Search entries"
+      total_entries:
+        one: "%{count} entry"
+        other: "%{count} entries"
+      enabled_entries:
+        one: "%{count} enabled"
+        other: "%{count} enabled"
+      disabled_entries:
+        one: "%{count} disabled"
+        other: "%{count} disabled"
+      filtered_entries:
+        one: "%{count} match"
+        other: "%{count} matches"
+      empty_filtered: "No entries match the current search."
       errors:
         load_failed: "Failed to load glossary entries."
         save_failed: "Failed to save glossary entry."

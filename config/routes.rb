@@ -11,14 +11,8 @@ DiscourseKeywordGlossary::Engine.routes.draw do
 end
 
 Discourse::Application.routes.draw do
-  get "/admin/plugins/keyword-glossary" =>
-        "discourse_keyword_glossary/admin/root#show"
-
   get "/admin/plugins/keyword-glossary/entries" =>
-        "admin/plugins#show",
-      defaults: {
-        plugin_id: "keyword-glossary",
-      }
+        redirect("/admin/plugins/keyword-glossary")
 
   mount ::DiscourseKeywordGlossary::Engine, at: "/admin/plugins/keyword-glossary"
 
