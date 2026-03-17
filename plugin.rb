@@ -21,9 +21,12 @@ require_relative "lib/discourse_keyword_glossary/engine"
 
 after_initialize do
   require_relative "app/models/discourse_keyword_glossary/glossary_entry"
+  require_relative "app/models/discourse_keyword_glossary/glossary_vote"
+  require_relative "app/models/discourse_keyword_glossary/glossary_correction"
   require_relative "app/serializers/discourse_keyword_glossary/admin_glossary_entry_serializer"
   require_relative "app/serializers/discourse_keyword_glossary/public_glossary_entry_serializer"
   require_relative "lib/discourse_keyword_glossary/legacy_importer"
   require_relative "app/controllers/discourse_keyword_glossary/glossary_entries_controller"
+  require_relative "app/controllers/discourse_keyword_glossary/feedback_controller"
   require_relative "app/controllers/discourse_keyword_glossary/admin/glossary_entries_controller"
 end

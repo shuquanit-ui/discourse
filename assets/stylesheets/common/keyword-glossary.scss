@@ -71,20 +71,44 @@ body.keyword-glossary-panel-open {
   cursor: pointer;
   font-size: 1.2rem;
   line-height: 1;
+  z-index: 2;
 }
 
 .keyword-glossary-panel__content {
   overflow-y: auto;
-  padding: 1.2rem 1.1rem 1.4rem;
+  padding: 1.2rem 1.1rem 1rem;
   height: 100%;
   box-sizing: border-box;
+}
+
+.keyword-glossary-panel__header {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  margin: 0 2.75rem 0.85rem 0;
+}
+
+.keyword-glossary-panel__logo {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.8rem;
+  object-fit: cover;
+  border: 1px solid var(--primary-low);
+  background: var(--primary-very-low);
+  flex: 0 0 auto;
 }
 
 .keyword-glossary-panel__term {
   font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.35;
-  margin: 0 2.75rem 0.85rem 0;
+}
+
+.keyword-glossary-panel__aliases {
+  margin-top: 0.25rem;
+  font-size: 0.87rem;
+  color: var(--primary-medium);
+  line-height: 1.5;
 }
 
 .keyword-glossary-panel__body {
@@ -101,7 +125,8 @@ body.keyword-glossary-panel-open {
   margin-bottom: 0;
 }
 
-.keyword-glossary-panel__body pre {
+.keyword-glossary-panel__body pre,
+.keyword-glossary-panel__body table {
   overflow-x: auto;
 }
 
@@ -109,14 +134,82 @@ body.keyword-glossary-panel-open {
   word-break: break-word;
 }
 
-.keyword-glossary-panel__link {
-  display: inline-flex;
+.keyword-glossary-panel__feedback {
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: space-between;
+  gap: 0.75rem;
   margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--primary-low);
+}
+
+.keyword-glossary-panel__vote-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.keyword-glossary-panel__vote,
+.keyword-glossary-panel__correction-toggle {
+  appearance: none;
+  border: 1px solid var(--primary-low);
+  border-radius: 999px;
+  background: var(--secondary);
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 0.88rem;
+  line-height: 1.2;
+  padding: 0.5rem 0.75rem;
+}
+
+.keyword-glossary-panel__vote.is-active,
+.keyword-glossary-panel__correction-toggle.is-active {
+  border-color: var(--tertiary);
   color: var(--tertiary);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  background: var(--tertiary-low);
+}
+
+.keyword-glossary-panel__feedback-meta {
+  margin-top: 0.55rem;
+  font-size: 0.84rem;
+  color: var(--primary-medium);
+}
+
+.keyword-glossary-panel__correction-form {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.keyword-glossary-panel__correction-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--secondary);
+  border: 1px solid var(--primary-low);
+  border-radius: 12px;
+  color: var(--primary);
+  padding: 0.8rem 0.9rem;
+  resize: vertical;
+  min-height: 7rem;
+}
+
+.keyword-glossary-panel__correction-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.keyword-glossary-panel__footer {
+  padding: 0 1.1rem 1.1rem;
+  border-top: 1px solid var(--primary-low);
+  background: var(--secondary);
+}
+
+.keyword-glossary-panel__link {
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 @media (max-width: 767px) {
@@ -126,7 +219,8 @@ body.keyword-glossary-panel-open {
     left: 0;
     right: 0;
     width: 100%;
-    height: min(72dvh, 560px);
+    height: auto;
+    max-height: min(78dvh, 680px);
     border-left: 0;
     border-top: 1px solid var(--primary-low);
     border-radius: 18px 18px 0 0;
@@ -138,19 +232,53 @@ body.keyword-glossary-panel-open {
   }
 
   .keyword-glossary-panel__content {
-    padding: 1rem 1rem 1.25rem;
+    padding: 1rem 1rem 0.9rem;
+    height: auto;
+  }
+
+  .keyword-glossary-panel__header {
+    margin-right: 2.5rem;
   }
 
   .keyword-glossary-panel__term {
     font-size: 1rem;
-    margin-right: 2.5rem;
+  }
+
+  .keyword-glossary-panel__feedback {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .keyword-glossary-panel__vote-group,
+  .keyword-glossary-panel__correction-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .keyword-glossary-panel__footer {
+    padding: 0 1rem 1rem;
   }
 }
 
-.keyword-glossary-admin__grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
+.keyword-glossary-admin__list {
+  overflow-x: auto;
+}
+
+.keyword-glossary-admin__entry-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 240px;
+}
+
+.keyword-glossary-admin__logo {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.7rem;
+  object-fit: cover;
+  border: 1px solid var(--primary-low);
+  background: var(--primary-very-low);
+  flex: 0 0 auto;
 }
 
 .keyword-glossary-admin__panel {
@@ -168,6 +296,10 @@ body.keyword-glossary-panel-open {
 .keyword-glossary-admin__description {
   color: var(--primary-medium);
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .keyword-glossary-admin__aliases {
@@ -184,19 +316,82 @@ body.keyword-glossary-panel-open {
   padding: 0.2rem 0.55rem;
 }
 
+.keyword-glossary-admin__stats {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--primary-medium);
+  min-width: 110px;
+}
+
 .keyword-glossary-admin__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
 }
 
-.keyword-glossary-admin__editor h2 {
-  margin-top: 0;
+.keyword-glossary-admin__muted {
+  color: var(--primary-medium);
+}
+
+.keyword-glossary-admin__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1002;
+}
+
+.keyword-glossary-admin__modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.keyword-glossary-admin__modal-card {
+  width: min(100%, 980px);
+  max-height: calc(100dvh - 3rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--secondary);
+  border: 1px solid var(--primary-low);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.24);
+}
+
+.keyword-glossary-admin__modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.15rem 0;
+}
+
+.keyword-glossary-admin__modal-head h2 {
+  margin: 0 0 0.25rem;
+}
+
+.keyword-glossary-admin__modal-body {
+  padding: 1rem 1.15rem 1.15rem;
+  overflow-y: auto;
+}
+
+.keyword-glossary-admin__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
 }
 
 .keyword-glossary-admin__field {
   display: block;
   margin-bottom: 0.9rem;
+}
+
+.keyword-glossary-admin__field--full {
+  margin-bottom: 0;
 }
 
 .keyword-glossary-admin__field span {
@@ -209,7 +404,7 @@ body.keyword-glossary-panel-open {
 .keyword-glossary-admin__field textarea {
   background: var(--secondary);
   border: 1px solid var(--primary-low);
-  border-radius: 8px;
+  border-radius: 10px;
   box-sizing: border-box;
   color: var(--primary);
   padding: 0.7rem 0.8rem;
@@ -222,11 +417,35 @@ body.keyword-glossary-panel-open {
   margin-top: 0.25rem;
 }
 
+.keyword-glossary-admin__editor-switch {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.keyword-glossary-admin__markdown-layout {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.keyword-glossary-admin__markdown-input {
+  min-height: 360px;
+  font-family: var(--font-family-monospace);
+}
+
+.keyword-glossary-admin__preview {
+  min-height: 360px;
+  padding: 0.95rem;
+  border: 1px solid var(--primary-low);
+  border-radius: 12px;
+  background: var(--primary-very-low);
+}
+
 .keyword-glossary-admin__checkbox {
   align-items: center;
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 }
 
 .keyword-glossary-admin__form-actions {
@@ -234,8 +453,29 @@ body.keyword-glossary-panel-open {
   gap: 0.5rem;
 }
 
-@media (max-width: 900px) {
-  .keyword-glossary-admin__grid {
+@media (max-width: 800px) {
+  .keyword-glossary-admin__modal {
+    padding: 0.75rem;
+    align-items: flex-end;
+  }
+
+  .keyword-glossary-admin__modal-card {
+    width: 100%;
+    max-height: calc(100dvh - 1.5rem);
+    border-radius: 16px 16px 0 0;
+  }
+
+  .keyword-glossary-admin__modal-head,
+  .keyword-glossary-admin__modal-body {
+    padding-left: 0.95rem;
+    padding-right: 0.95rem;
+  }
+
+  .keyword-glossary-admin__form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .keyword-glossary-admin__actions {
+    min-width: 180px;
   }
 }

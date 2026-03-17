@@ -3,8 +3,9 @@ zh_CN:
     keyword_glossary_enabled: "启用关键词词条弹窗"
     keyword_glossary_entries: "旧版词条导入源（已废弃）"
     keyword_glossary_trigger: "词条触发方式"
-    keyword_glossary_max_width: "弹窗最大宽度（像素）"
+    keyword_glossary_max_width: "桌面词条抽屉最大宽度（像素）"
   keyword_glossary:
     title: "关键词词条"
     errors:
       alias_matches_term: "别名不能与主词条重复"
+      invalid_vote_value: "无效的投票值"

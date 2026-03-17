@@ -3,8 +3,9 @@ en:
     keyword_glossary_enabled: "Enable keyword glossary"
     keyword_glossary_entries: "Legacy glossary import source (deprecated)"
     keyword_glossary_trigger: "Glossary trigger mode"
-    keyword_glossary_max_width: "Glossary popup max width (px)"
+    keyword_glossary_max_width: "Desktop glossary drawer max width (px)"
   keyword_glossary:
     title: "Keyword Glossary"
     errors:
       alias_matches_term: "Aliases cannot duplicate the main term"
+      invalid_vote_value: "Invalid vote value"

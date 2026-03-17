@@ -7,8 +7,18 @@ module DiscourseKeywordGlossary
     scope :enabled_entries, -> { where(enabled: true) }
     scope :ordered, -> { order(Arel.sql("lower(term) asc")) }
 
+    has_many :votes,
+             class_name: "DiscourseKeywordGlossary::GlossaryVote",
+             foreign_key: :glossary_entry_id,
+             dependent: :destroy
+    has_many :corrections,
+             class_name: "DiscourseKeywordGlossary::GlossaryCorrection",
+             foreign_key: :glossary_entry_id,
+             dependent: :destroy
+
     validates :term, presence: true, uniqueness: { case_sensitive: false }
     validates :description, presence: true
+    validates :logo_url, length: { maximum: 1000 }, allow_blank: true
     validate :aliases_are_distinct
 
     before_validation :normalize_fields
@@ -36,6 +46,7 @@ module DiscourseKeywordGlossary
       self.term = term.to_s.strip
       self.description = description.to_s.strip
       self.link_url = link_url.to_s.strip.presence
+      self.logo_url = logo_url.to_s.strip.presence
       self[:aliases] =
         aliases
           .map(&:strip)

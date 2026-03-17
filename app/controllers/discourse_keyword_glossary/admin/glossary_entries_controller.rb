@@ -47,6 +47,10 @@ module DiscourseKeywordGlossary
         render_json_error(e.record.errors.full_messages.join("\n"))
       end
 
+      def preview
+        render_json_dump(cooked: PrettyText.cook(params[:raw].to_s))
+      end
+
       private
 
       def ensure_entry
@@ -54,7 +58,7 @@ module DiscourseKeywordGlossary
       end
 
       def entry_params
-        params.require(:entry).permit(:term, :description, :link_url, :enabled, aliases: [])
+        params.require(:entry).permit(:term, :description, :link_url, :logo_url, :enabled, aliases: [])
       end
 
       def serialize_entry(entry)

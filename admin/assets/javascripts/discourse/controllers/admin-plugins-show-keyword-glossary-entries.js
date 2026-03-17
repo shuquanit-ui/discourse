@@ -1,6 +1,7 @@
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { tracked } from "@glimmer/tracking";
+import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 import I18n from "discourse-i18n";
 
@@ -11,6 +12,7 @@ function defaultForm() {
     aliasesText: "",
     description: "",
     link_url: "",
+    logo_url: "",
     enabled: true,
   };
 }
@@ -30,6 +32,10 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   @tracked notice = null;
   @tracked error = null;
   @tracked form = defaultForm();
+  @tracked editorOpen = false;
+  @tracked previewTab = "write";
+  @tracked previewHtml = "";
+  previewTimer = null;
 
   loadModel(payload) {
     this.entries = payload.entries || [];
@@ -37,7 +43,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     this.loading = false;
     this.notice = null;
     this.error = null;
-    this.form = defaultForm();
+    this.resetEditor();
   }
 
   get isEditing() {
@@ -48,8 +54,59 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
     return this.meta?.has_legacy_entries && !this.meta?.imported_at;
   }
 
+  get isWriteTab() {
+    return this.previewTab === "write";
+  }
+
+  get isPreviewTab() {
+    return this.previewTab === "preview";
+  }
+
+  get previewHtmlSafe() {
+    return htmlSafe(this.previewHtml || "");
+  }
+
   setField(field, value) {
     this.form = { ...this.form, [field]: value };
+    if (field === "description") {
+      this.schedulePreview();
+    }
+  }
+
+  resetEditor() {
+    this.form = defaultForm();
+    this.editorOpen = false;
+    this.previewTab = "write";
+    this.previewHtml = "";
+    this.clearPreviewTimer();
+  }
+
+  clearPreviewTimer() {
+    if (this.previewTimer) {
+      clearTimeout(this.previewTimer);
+      this.previewTimer = null;
+    }
+  }
+
+  schedulePreview() {
+    this.clearPreviewTimer();
+    this.previewTimer = setTimeout(() => this.updatePreview(), 250);
+  }
+
+  async updatePreview() {
+    this.clearPreviewTimer();
+
+    try {
+      const response = await ajax("/admin/plugins/keyword-glossary/preview.json", {
+        type: "POST",
+        data: {
+          raw: this.form.description || "",
+        },
+      });
+      this.previewHtml = response.cooked || "";
+    } catch {
+      this.previewHtml = `<p>${I18n.t("keyword_glossary.errors.preview_failed")}</p>`;
+    }
   }
 
   buildPayload() {
@@ -58,6 +115,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       aliases: toAliases(this.form.aliasesText),
       description: this.form.description.trim(),
       link_url: this.form.link_url.trim(),
+      logo_url: this.form.logo_url.trim(),
       enabled: this.form.enabled,
     };
   }
@@ -78,14 +136,17 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   }
 
   @action
-  startCreate() {
+  async startCreate() {
     this.notice = null;
     this.error = null;
     this.form = defaultForm();
+    this.editorOpen = true;
+    this.previewTab = "write";
+    await this.updatePreview();
   }
 
   @action
-  editEntry(entry) {
+  async editEntry(entry) {
     this.notice = null;
     this.error = null;
     this.form = {
@@ -94,15 +155,27 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       aliasesText: (entry.aliases || []).join("\n"),
       description: entry.description || "",
       link_url: entry.link_url || "",
+      logo_url: entry.logo_url || "",
       enabled: entry.enabled ?? true,
     };
+    this.editorOpen = true;
+    this.previewTab = "write";
+    await this.updatePreview();
   }
 
   @action
-  cancelEdit() {
+  closeEditor() {
     this.notice = null;
     this.error = null;
-    this.form = defaultForm();
+    this.resetEditor();
+  }
+
+  @action
+  switchTab(tab) {
+    this.previewTab = tab;
+    if (tab === "preview") {
+      this.updatePreview();
+    }
   }
 
   @action
@@ -123,6 +196,11 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
   @action
   updateLinkUrl(event) {
     this.setField("link_url", event.target.value);
+  }
+
+  @action
+  updateLogoUrl(event) {
+    this.setField("logo_url", event.target.value);
   }
 
   @action
@@ -153,7 +231,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       }
 
       this.notice = I18n.t("keyword_glossary.save_success");
-      this.form = defaultForm();
+      this.resetEditor();
       await this.refreshEntries();
     } catch (error) {
       this.error =
@@ -179,7 +257,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
       });
       this.notice = I18n.t("keyword_glossary.delete_success");
       if (this.form.id === entry.id) {
-        this.form = defaultForm();
+        this.resetEditor();
       }
       await this.refreshEntries();
     } catch {
@@ -201,6 +279,7 @@ export default class AdminPluginsShowKeywordGlossaryEntriesController extends Co
             aliases: entry.aliases || [],
             description: entry.description,
             link_url: entry.link_url,
+            logo_url: entry.logo_url,
             enabled: !entry.enabled,
           },
         },

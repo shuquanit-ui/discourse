@@ -7,6 +7,7 @@ DiscourseKeywordGlossary::Engine.routes.draw do
     put "entries/:id" => "admin/glossary_entries#update"
     delete "entries/:id" => "admin/glossary_entries#destroy"
     post "import-legacy" => "admin/glossary_entries#import_legacy"
+    post "preview" => "admin/glossary_entries#preview"
   end
 end
 
@@ -15,5 +16,7 @@ Discourse::Application.routes.draw do
 
   scope "/", defaults: { format: :json } do
     get "/keyword-glossary/entries" => "discourse_keyword_glossary/glossary_entries#index"
+    post "/keyword-glossary/entries/:id/vote" => "discourse_keyword_glossary/feedback#vote"
+    post "/keyword-glossary/entries/:id/correction" => "discourse_keyword_glossary/feedback#correction"
   end
 end
