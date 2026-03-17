@@ -18,7 +18,8 @@ const state = {
   regex: null,
   loadPromise: null,
   loaded: false,
-  popupOpenedAt: 0,
+  panelOpen: false,
+  activeTerm: null,
 };
 
 function escapeRegExp(text) {
@@ -31,7 +32,7 @@ function normalizeEntries(entries) {
       ...entry,
       aliases: Array.isArray(entry.aliases) ? entry.aliases : [],
     }))
-    .filter((entry) => entry.term && entry.description);
+    .filter((entry) => entry.term && (entry.description || entry.description_cooked));
 }
 
 function buildRegex(entries) {
@@ -75,79 +76,76 @@ function needsWordBoundary(term) {
   return /[A-Za-z0-9]/.test(term || "");
 }
 
-function createPopup(maxWidth) {
-  let popup = document.querySelector(".keyword-glossary-popup");
+function createPanel(maxWidth) {
+  let root = document.querySelector(".keyword-glossary-panel-root");
 
-  if (popup) {
-    popup.style.maxWidth = `${maxWidth}px`;
-    return popup;
+  if (root) {
+    root.style.setProperty("--keyword-glossary-panel-width", `${maxWidth}px`);
+    return root;
   }
 
-  popup = document.createElement("div");
-  popup.className = "keyword-glossary-popup";
-  popup.style.maxWidth = `${maxWidth}px`;
-  popup.hidden = true;
-  document.body.appendChild(popup);
-  return popup;
+  root = document.createElement("div");
+  root.className = "keyword-glossary-panel-root";
+  root.style.setProperty("--keyword-glossary-panel-width", `${maxWidth}px`);
+  root.hidden = true;
+
+  root.innerHTML = `
+    <div class="keyword-glossary-panel-backdrop" data-keyword-glossary-close="1"></div>
+    <aside class="keyword-glossary-panel" role="dialog" aria-modal="true" aria-label="Keyword glossary">
+      <button class="keyword-glossary-panel__close" type="button" aria-label="${I18n.t("close")}">
+        <span aria-hidden="true">×</span>
+      </button>
+      <div class="keyword-glossary-panel__content">
+        <div class="keyword-glossary-panel__term"></div>
+        <div class="keyword-glossary-panel__body cooked"></div>
+        <a class="keyword-glossary-panel__link" target="_blank" rel="noopener noreferrer"></a>
+      </div>
+    </aside>
+  `;
+
+  document.body.appendChild(root);
+  return root;
 }
 
-function renderPopup(popup, entry) {
-  popup.textContent = "";
-
-  const title = document.createElement("div");
-  title.className = "keyword-glossary-popup__term";
-  title.textContent = entry.term;
-  popup.appendChild(title);
-
-  const body = document.createElement("div");
-  body.className = "keyword-glossary-popup__desc";
-  body.textContent = entry.description;
-  popup.appendChild(body);
-
-  if (entry.link_url) {
-    const link = document.createElement("a");
-    link.className = "keyword-glossary-popup__link";
-    link.href = entry.link_url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = I18n.t("keyword_glossary.popup_link") || "View details";
-    popup.appendChild(link);
-  }
+function setPanelOpen(root, open) {
+  root.hidden = !open;
+  root.classList.toggle("is-open", open);
+  document.body.classList.toggle("keyword-glossary-panel-open", open);
+  state.panelOpen = open;
 }
 
-function positionPopup(popup, target) {
-  const margin = 8;
-  const targetRect = target.getBoundingClientRect();
-
-  popup.hidden = false;
-  const popupRect = popup.getBoundingClientRect();
-
-  let top = targetRect.bottom + window.scrollY + margin;
-  let left = targetRect.left + window.scrollX;
-
-  if (left + popupRect.width > window.scrollX + window.innerWidth - margin) {
-    left = window.scrollX + window.innerWidth - popupRect.width - margin;
-  }
-
-  if (left < window.scrollX + margin) {
-    left = window.scrollX + margin;
-  }
-
-  if (top + popupRect.height > window.scrollY + window.innerHeight - margin) {
-    top = targetRect.top + window.scrollY - popupRect.height - margin;
-  }
-
-  popup.style.top = `${Math.max(top, window.scrollY + margin)}px`;
-  popup.style.left = `${left}px`;
-  state.popupOpenedAt = Date.now();
-}
-
-function hidePopup(popup, immediate = false) {
-  if (!immediate && Date.now() - state.popupOpenedAt < 150) {
+function hidePanel(root) {
+  if (!root || !state.panelOpen) {
     return;
   }
 
-  popup.hidden = true;
+  state.activeTerm = null;
+  setPanelOpen(root, false);
+}
+
+function renderPanel(root, entry) {
+  const term = root.querySelector(".keyword-glossary-panel__term");
+  const body = root.querySelector(".keyword-glossary-panel__body");
+  const link = root.querySelector(".keyword-glossary-panel__link");
+
+  term.textContent = entry.term;
+  body.innerHTML = entry.description_cooked || "";
+
+  if (entry.link_url) {
+    link.href = entry.link_url;
+    link.textContent = I18n.t("keyword_glossary.popup_link") || "View details";
+    link.hidden = false;
+  } else {
+    link.hidden = true;
+    link.removeAttribute("href");
+    link.textContent = "";
+  }
+}
+
+function showPanel(root, entry) {
+  renderPanel(root, entry);
+  state.activeTerm = entry.term;
+  setPanelOpen(root, true);
 }
 
 function replaceTextNode(textNode, regex, entryMap) {
@@ -215,6 +213,7 @@ function processCooked(element) {
 
       if (
         parent.closest(".keyword-glossary-trigger") ||
+        parent.closest(".keyword-glossary-panel") ||
         parent.closest("[data-keyword-glossary-processed='1']")
       ) {
         return NodeFilter.FILTER_REJECT;
@@ -271,34 +270,42 @@ export default apiInitializer("1.8.0", (api) => {
     return;
   }
 
-  const popup = createPopup(Number(readSetting("keyword_glossary_max_width", 320) || 320));
+  const panel = createPanel(Number(readSetting("keyword_glossary_max_width", 320) || 320));
   loadEntries();
 
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest(".keyword-glossary-trigger");
+    const shouldClose = event.target.closest("[data-keyword-glossary-close='1']");
+    const closeButton = event.target.closest(".keyword-glossary-panel__close");
 
-    if (!trigger) {
-      if (!popup.contains(event.target)) {
-        hidePopup(popup, true);
+    if (trigger) {
+      event.preventDefault();
+      const entry = state.entryMap.get((trigger.dataset.term || "").toLowerCase());
+
+      if (!entry) {
+        return;
       }
+
+      showPanel(panel, entry);
       return;
     }
 
-    event.preventDefault();
-    const entry = state.entryMap.get((trigger.dataset.term || "").toLowerCase());
-
-    if (!entry) {
-      return;
+    if (shouldClose || closeButton) {
+      hidePanel(panel);
     }
-
-    renderPopup(popup, entry);
-    positionPopup(popup, trigger);
   });
 
-  window.addEventListener("scroll", () => hidePopup(popup), { passive: true });
-  window.addEventListener("resize", () => hidePopup(popup));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      hidePanel(panel);
+    }
+  });
+
+  window.addEventListener("scroll", () => hidePanel(panel), { passive: true });
+  window.addEventListener("resize", () => hidePanel(panel));
 
   api.onPageChange(() => {
+    hidePanel(panel);
     document.querySelectorAll(".cooked").forEach((element) => {
       if (state.regex) {
         processCooked(element);
