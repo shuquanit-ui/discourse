@@ -11,16 +11,19 @@ DiscourseKeywordGlossary::Engine.routes.draw do
 end
 
 Discourse::Application.routes.draw do
+  mount ::DiscourseKeywordGlossary::Engine, at: "/admin/plugins/discourse-keyword-glossary"
+
   get "/admin/plugins/discourse-keyword-glossary/entries" =>
         "admin/plugins#show",
-      plugin_id: "discourse-keyword-glossary"
+      plugin_id: "discourse-keyword-glossary",
+      constraints: lambda { |request| request.format.html? }
 
   get "/admin/plugins/keyword-glossary" =>
-        redirect("/admin/plugins/discourse-keyword-glossary/entries")
+        redirect("/admin/plugins/discourse-keyword-glossary/entries"),
+      constraints: lambda { |request| request.format.html? }
   get "/admin/plugins/keyword-glossary/entries" =>
-        redirect("/admin/plugins/discourse-keyword-glossary/entries")
-
-  mount ::DiscourseKeywordGlossary::Engine, at: "/admin/plugins/discourse-keyword-glossary"
+        redirect("/admin/plugins/discourse-keyword-glossary/entries"),
+      constraints: lambda { |request| request.format.html? }
 
   scope "/", defaults: { format: :json } do
     get "/keyword-glossary/entries" => "discourse_keyword_glossary/glossary_entries#index"
