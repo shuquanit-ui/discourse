@@ -1,6 +1,10 @@
 zh_CN:
   site_settings:
     keyword_glossary_enabled: "启用关键词词条弹窗"
-    keyword_glossary_entries: "词条配置（每行一个）：关键词|说明|链接(可选)"
-    keyword_glossary_trigger: "触发方式（click/hover）"
+    keyword_glossary_entries: "旧版词条导入源（已废弃）"
+    keyword_glossary_trigger: "词条触发方式"
     keyword_glossary_max_width: "弹窗最大宽度（像素）"
+  keyword_glossary:
+    title: "关键词词条"
+    errors:
+      alias_matches_term: "别名不能与主词条重复"

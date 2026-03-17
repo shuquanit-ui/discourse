@@ -4,14 +4,12 @@ plugins:
     client: true
   keyword_glossary_entries:
     type: list
-    default: "RAG|Retrieval-Augmented Generation，先检索再生成。|https://quria.me\nEmbedding|把文本转向量表示，便于相似度检索。|https://quria.me"
-    client: true
+    default: ""
   keyword_glossary_trigger:
     default: "click"
     type: enum
     choices:
       - click
-      - hover
     client: true
   keyword_glossary_max_width:
     default: 320
