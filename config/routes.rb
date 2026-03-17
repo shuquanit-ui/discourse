@@ -12,6 +12,12 @@ DiscourseKeywordGlossary::Engine.routes.draw do
 end
 
 Discourse::Application.routes.draw do
+  get "/admin/plugins/keyword-glossary" =>
+        "admin/plugins#show",
+      defaults: {
+        plugin_id: "keyword-glossary",
+      }
+
   get "/admin/plugins/keyword-glossary/entries" =>
         "admin/plugins#show",
       defaults: {
